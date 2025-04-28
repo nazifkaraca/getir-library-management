@@ -1,4 +1,4 @@
-package com.getir.library_management.dto;
+package com.getir.library_management.dto.User;
 
 import lombok.Data;
 

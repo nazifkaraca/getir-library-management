@@ -1,7 +1,7 @@
 package com.getir.library_management.controller;
 
-import com.getir.library_management.dto.RegisterRequestDto;
-import com.getir.library_management.dto.UserResponseDto;
+import com.getir.library_management.dto.User.RegisterRequestDto;
+import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
