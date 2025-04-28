@@ -1,11 +1,14 @@
 package com.getir.library_management.service.impl;
 
+import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
+import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
 import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.UserService;
+import com.getir.library_management.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +19,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
+    // Register
     @Override
     public UserResponseDto register(RegisterRequestDto request) {
         User user = User.builder()
@@ -33,6 +38,23 @@ public class UserServiceImpl implements UserService {
                 .fullName(savedUser.getFullName())
                 .email(savedUser.getEmail())
                 .role(savedUser.getRole().name())
+                .build();
+    }
+
+    // Login
+    @Override
+    public AuthenticationResponseDto login(AuthenticationRequestDto request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found."));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials.");
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return AuthenticationResponseDto.builder()
+                .token(token)
                 .build();
     }
 

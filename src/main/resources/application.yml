@@ -10,7 +10,7 @@ spring:
   security:
     user:
       name: admin
-      password: 1234
+      password: zkxnvzlknvakjnvzjxbvzhbxvxjz12412412_-
 
   jpa:
     hibernate:
