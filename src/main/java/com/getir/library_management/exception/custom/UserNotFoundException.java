@@ -1,4 +1,4 @@
-package com.getir.library_management.exception;
+package com.getir.library_management.exception.custom;
 
 public class UserNotFoundException extends RuntimeException {
 
