@@ -1,5 +1,6 @@
 package com.getir.library_management.config;
 
+import com.getir.library_management.entity.User;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.util.JwtService;
 import jakarta.servlet.FilterChain;
@@ -29,42 +30,59 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Get the Authorization header from the incoming request
-        String authHeader = request.getHeader("Authorization");
+        // Retrieve the Authorization header from the incoming request
+        final String authHeader = request.getHeader("Authorization");
 
-        // If the Authorization header is missing or does not start with "Bearer ", skip authentication
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // If header is missing or doesn't start with 'Bearer ', skip this filter
+        if (!hasBearerToken(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract the JWT token by removing the "Bearer " prefix
-        String jwt = authHeader.substring(7);
+        // Extract the token from the header
+        final String token = extractToken(authHeader);
 
-        // Extract the username (email) from the JWT token
-        String userEmail = jwtService.extractUsername(jwt);
+        // Extract the user's email (username) from the token
+        final String email = jwtService.extractUsername(token);
 
-        // If username is extracted and there is no existing authentication in the security context
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Try to find the user from the database by email
-            var user = userRepository.findByEmail(userEmail).orElse(null);
+        // If email is extracted and no authentication is currently set
+        if (email != null && isNotAuthenticated()) {
+            // Try to find the user by email in the database
+            userRepository.findByEmail(email).ifPresent(user -> {
+                // Build authentication token with user's role and attach request details
+                UsernamePasswordAuthenticationToken authToken = buildAuthToken(user, request);
 
-            // If the user exists, create an authentication token
-            if (user != null) {
-                // Create an authentication token with user details, no credentials, and no authorities (permissions)
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(user, null, List.of(new SimpleGrantedAuthority(user.getRole().name())));
-
-                // Attach request details (like remote IP address) to the authentication token
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // Set the authentication token in the SecurityContext to mark the user as authenticated
+                // Set the authentication token in the security context
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+            });
         }
 
-        // Continue the filter chain (move to the next filter or controller)
+        // Continue with the next filter in the chain
         filterChain.doFilter(request, response);
     }
+
+    // Checks if the Authorization header exists and starts with "Bearer "
+    private boolean hasBearerToken(String header) {
+        return header != null && header.startsWith("Bearer ");
+    }
+
+    // Removes the "Bearer " prefix from the Authorization header to get the token
+    private String extractToken(String header) {
+        return header.substring(7);
+    }
+
+    // Checks if there is no authentication set in the current security context
+    private boolean isNotAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication() == null;
+    }
+
+    // Creates an authentication token with the user's role and attaches request details
+    private UsernamePasswordAuthenticationToken buildAuthToken(User user, HttpServletRequest request) {
+        var authorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        var token = new UsernamePasswordAuthenticationToken(user, null, authorities);
+        token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        return token;
+    }
 }
+
 
