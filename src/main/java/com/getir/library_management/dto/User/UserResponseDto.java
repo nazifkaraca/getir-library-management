@@ -1,11 +1,11 @@
 package com.getir.library_management.dto.User;
 
 import com.getir.library_management.entity.Role;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class UserResponseDto {
     private Long id;
     private String fullName;
