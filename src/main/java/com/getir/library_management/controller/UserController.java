@@ -3,6 +3,7 @@ package com.getir.library_management.controller;
 import com.getir.library_management.dto.User.UpdateUserRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,12 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserServiceImpl userService;
 
     // Update endpoint
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('LIBRARIAN')")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequestDto request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }

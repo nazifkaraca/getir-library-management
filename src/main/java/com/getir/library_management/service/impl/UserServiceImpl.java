@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserResponseDto.class); // Direct mapping
     }
 
+    // Get all users
     @Override
     public List<UserResponseDto> getAllUsers() {
         return userRepository.findAll().stream()
