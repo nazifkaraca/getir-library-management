@@ -1,74 +1,71 @@
 package com.getir.library_management.service.impl;
 
-import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
-import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
-import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
-import com.getir.library_management.entity.Role;
+import com.getir.library_management.dto.User.UpdateUserRequestDto;
 import com.getir.library_management.entity.User;
-import com.getir.library_management.exception.EmailAlreadyExistsException;
-import com.getir.library_management.exception.UserNotFoundException;
+import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.UserService;
-import com.getir.library_management.util.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final ModelMapper modelMapper;
+    private static final String USER_NOT_FOUND = "User not found.";
 
-    // Register
+    // Update
     @Override
-    public UserResponseDto register(RegisterRequestDto request) {
-        // Check if the email is already registered
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException("Email is already registered: " + request.getEmail());
-        }
+    public UserResponseDto updateUser(Long id, UpdateUserRequestDto request) {
+        User user = userRepository.findById(request.getId())
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        // Create new user
-        User newUser = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword())) // Encrypt password with BCrypt
-                .role(Role.ROLE_USER) // Assign default role of "User"
-                .build();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
 
-        // Save new user
-        User savedUser = userRepository.save(newUser);
+        User updatedUser = userRepository.save(user);
 
-        // Return user response DTO
-        return UserResponseDto.builder()
-                .id(savedUser.getId())
-                .fullName(savedUser.getFullName())
-                .email(savedUser.getEmail())
-                .role(savedUser.getRole().name())
-                .build();
+        return modelMapper.map(updatedUser, UserResponseDto.class);
     }
 
-    // Login
+    // Get user by id
     @Override
-    public AuthenticationResponseDto login(AuthenticationRequestDto request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found."));
+    public UserResponseDto getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Invalid credentials.");
-        }
-
-        String token = jwtService.generateToken(user.getEmail());
-
-        return AuthenticationResponseDto.builder()
-                .token(token)
-                .build();
+        return modelMapper.map(user, UserResponseDto.class); // Direct mapping
     }
 
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> modelMapper.map(user, UserResponseDto.class)) // Map each User to UserResponseDto
+                .toList();
+    }
+
+    // Hard Delete
+    @Override
+    public void hardDeleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        userRepository.delete(user);
+    }
+
+    // Soft Delete
+    @Override
+    public void softDeleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        user.setMarkedAsDeleted(true);
+        userRepository.save(user);
+    }
 }

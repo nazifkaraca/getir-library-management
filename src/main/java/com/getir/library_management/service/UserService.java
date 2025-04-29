@@ -1,11 +1,14 @@
 package com.getir.library_management.service;
 
-import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
-import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
-import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
+import com.getir.library_management.dto.User.UpdateUserRequestDto;
+
+import java.util.List;
 
 public interface UserService {
-    UserResponseDto register(RegisterRequestDto request);
-    AuthenticationResponseDto login(AuthenticationRequestDto request);
+    UserResponseDto updateUser(Long id, UpdateUserRequestDto request);
+    UserResponseDto getUserById(Long id);
+    List<UserResponseDto> getAllUsers();
+    void hardDeleteUser(Long id);
+    void softDeleteUser(Long id);
 }
