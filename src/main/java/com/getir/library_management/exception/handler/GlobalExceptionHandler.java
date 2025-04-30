@@ -1,6 +1,8 @@
 package com.getir.library_management.exception.handler;
 
 import com.getir.library_management.exception.ErrorResponse;
+import com.getir.library_management.exception.custom.BookAlreadyExistsException;
+import com.getir.library_management.exception.custom.BookNotFoundException;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import io.jsonwebtoken.JwtException;
@@ -39,7 +41,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now()) // When the error happened
                 .status(HttpStatus.CONFLICT.value()) // 404 status code
-                .error("Conflict") // Short title
+                .error("Email Already Exists") // Short title
                 .message(ex.getMessage()) // Exception message
                 .build();
 
@@ -57,6 +59,32 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    // Book not found exception handler
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBookNotFoundException(BookNotFoundException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()) // When the error happened
+                .status(HttpStatus.NOT_FOUND.value()) // 404 status code
+                .error("Book Not Found") // Short title
+                .message(ex.getMessage()) // Exception message
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    // Book already exists exception handler
+    @ExceptionHandler(BookAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()) // When the error happened
+                .status(HttpStatus.CONFLICT.value()) // 404 status code
+                .error("Book Already Exists") // Short title
+                .message(ex.getMessage()) // Exception message
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     // Handles validation errors (e.g., @Valid failures)
@@ -114,5 +142,17 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()) // Error time
+                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .error("Invalid Sort Field") // Human-readable message
+                .message("The sort field is invalid or does not exist in Book entity.") // Developer/user hint
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
