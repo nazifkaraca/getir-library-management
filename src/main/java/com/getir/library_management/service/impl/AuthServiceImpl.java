@@ -6,17 +6,20 @@ import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
+import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.AuthService;
 import com.getir.library_management.util.JwtService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -25,7 +28,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final ModelMapper modelMapper;
-    private static final String USER_NOT_FOUND = "User not found.";
 
     // Register
     @Override
@@ -54,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthenticationResponseDto login(AuthenticationRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid credentials.");

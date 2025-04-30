@@ -5,7 +5,6 @@ import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
 import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.service.impl.AuthServiceImpl;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearerAuth") // JWT required for all endpoints
 public class UserController {
 
     private final UserServiceImpl userService;

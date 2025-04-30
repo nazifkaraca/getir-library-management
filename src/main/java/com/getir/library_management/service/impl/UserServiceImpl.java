@@ -3,28 +3,30 @@ package com.getir.library_management.service.impl;
 import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.dto.User.UpdateUserRequestDto;
 import com.getir.library_management.entity.User;
+import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-    private static final String USER_NOT_FOUND = "User not found.";
 
     // Update
     @Override
     public UserResponseDto updateUser(Long id, UpdateUserRequestDto request) {
         User user = userRepository.findById(request.getId())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
 
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
 
         return modelMapper.map(user, UserResponseDto.class); // Direct mapping
     }
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void hardDeleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
 
         userRepository.delete(user);
     }
@@ -64,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void softDeleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
 
         user.setMarkedAsDeleted(true);
         userRepository.save(user);
