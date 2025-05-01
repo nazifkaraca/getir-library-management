@@ -1,4 +1,4 @@
-package com.getir.library_management.service;
+package com.getir.library_management.service.interfaces;
 
 import com.getir.library_management.dto.Book.BookResponseDto;
 import com.getir.library_management.dto.Book.CreateBookRequestDto;

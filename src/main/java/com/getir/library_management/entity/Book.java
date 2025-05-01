@@ -30,5 +30,5 @@ public class Book {
     private String publicationDate;
 
     @Column(nullable = false)
-    private boolean availability = true;
+    private boolean available = true;
 }

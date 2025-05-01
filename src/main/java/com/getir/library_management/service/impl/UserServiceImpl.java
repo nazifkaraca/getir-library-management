@@ -6,7 +6,7 @@ import com.getir.library_management.entity.User;
 import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.repository.UserRepository;
-import com.getir.library_management.service.UserService;
+import com.getir.library_management.service.interfaces.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

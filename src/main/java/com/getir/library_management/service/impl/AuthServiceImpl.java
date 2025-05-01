@@ -10,7 +10,7 @@ import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.repository.UserRepository;
-import com.getir.library_management.service.AuthService;
+import com.getir.library_management.service.interfaces.AuthService;
 import com.getir.library_management.util.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

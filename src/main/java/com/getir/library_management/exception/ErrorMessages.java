@@ -4,4 +4,7 @@ public class ErrorMessages {
     public static final String BOOK_NOT_FOUND = "Book not found.";
     public static final String BOOK_EXISTS = "Book already exists.";
     public static final String USER_NOT_FOUND = "User not found.";
+    public static final String BOOK_UNAVAILABLE = "The book is unavailable.";
+    public static final String BORROWING_NOT_FOUND = "The borrowing Not Found.";
+
 }

@@ -2,7 +2,7 @@ package com.getir.library_management.controller;
 
 import com.getir.library_management.dto.User.UpdateUserRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
-import com.getir.library_management.service.impl.UserServiceImpl;
+import com.getir.library_management.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth") // JWT required for all endpoints
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     // Update endpoint
     @PutMapping("/{id}")

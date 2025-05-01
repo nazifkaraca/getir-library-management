@@ -5,6 +5,7 @@ import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
 import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.dto.User.UserResponseDto;
 import com.getir.library_management.service.impl.AuthServiceImpl;
+import com.getir.library_management.service.interfaces.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     // Register endpoint
     @PostMapping("/register")

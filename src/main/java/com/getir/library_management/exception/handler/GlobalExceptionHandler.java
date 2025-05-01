@@ -1,10 +1,7 @@
 package com.getir.library_management.exception.handler;
 
 import com.getir.library_management.exception.ErrorResponse;
-import com.getir.library_management.exception.custom.BookAlreadyExistsException;
-import com.getir.library_management.exception.custom.BookNotFoundException;
-import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
-import com.getir.library_management.exception.custom.UserNotFoundException;
+import com.getir.library_management.exception.custom.*;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +58,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    // Borrowing not found exception handler
+    @ExceptionHandler(BorrowingNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBorrowingNotFoundException(BorrowingNotFoundException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()) // When the error happened
+                .status(HttpStatus.NOT_FOUND.value()) // 404 status code
+                .error("Borrowing Not Found") // Short title
+                .message(ex.getMessage()) // Exception message
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
     // Book not found exception handler
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleBookNotFoundException(BookNotFoundException ex) {
@@ -81,6 +91,19 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now()) // When the error happened
                 .status(HttpStatus.CONFLICT.value()) // 404 status code
                 .error("Book Already Exists") // Short title
+                .message(ex.getMessage()) // Exception message
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    // Book already exists exception handler
+    @ExceptionHandler(BookUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleBookUnavailableException(BookUnavailableException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now()) // When the error happened
+                .status(HttpStatus.CONFLICT.value()) // 404 status code
+                .error("The book is currently borrowed by another user.") // Short title
                 .message(ex.getMessage()) // Exception message
                 .build();
 
