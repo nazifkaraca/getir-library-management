@@ -1,6 +1,5 @@
 package com.getir.library_management.service.impl;
 
-import com.getir.library_management.dto.Book.BookResponseDto;
 import com.getir.library_management.dto.Borrow.BorrowRequestDto;
 import com.getir.library_management.dto.Borrow.BorrowResponseDto;
 import com.getir.library_management.entity.Book;
@@ -16,9 +15,6 @@ import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.interfaces.BorrowingService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.NotFound;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,11 +37,11 @@ public class BorrowingServiceImpl implements BorrowingService {
         Book book = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
 
-        if (!book.isAvailable()) {
+        if (!book.isAvailability()) {
             throw new BookUnavailableException(ErrorMessages.BOOK_UNAVAILABLE);
         }
 
-        book.setAvailable(false);
+        book.setAvailability(false);
         bookRepository.save(book);
 
         Borrowing borrowing = Borrowing.builder()
@@ -74,7 +70,7 @@ public class BorrowingServiceImpl implements BorrowingService {
                 .orElseThrow(() -> new BorrowingNotFoundException(ErrorMessages.BORROWING_NOT_FOUND));
 
         Book book = borrowedBook.getBook();
-        book.setAvailable(true);
+        book.setAvailability(true);
         bookRepository.save(book);
 
         borrowedBook.setReturnDate(LocalDate.now());
