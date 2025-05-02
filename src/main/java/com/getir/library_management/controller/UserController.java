@@ -19,39 +19,44 @@ public class UserController {
 
     private final UserService userService;
 
-    // Update endpoint
-    @PutMapping("/{id}")
+    // Update endpoint - LIBRARIAN only
+    // PUT http://localhost:8070/api/user/1
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequestDto request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
-    // Hard delete endpoint (permanently remove the user)
-    @DeleteMapping("/hard-delete/{id}")
+    // Hard delete endpoint (permanently remove the user) - LIBRARIAN only
+    // DELETE http://localhost:8070/api/user/hard-delete/1
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @DeleteMapping("/hard-delete/{id}")
     public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
         userService.hardDeleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Soft delete endpoint (mark user as deleted)
-    @DeleteMapping("/soft-delete/{id}")
+    // Soft delete endpoint (mark user as deleted) - LIBRARIAN only
+    // DELETE http://localhost:8070/api/user/soft-delete/1
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @DeleteMapping("/soft-delete/{id}")
     public ResponseEntity<Void> softDelete(@PathVariable Long id) {
         userService.softDeleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Get user by id
-    @GetMapping("/{id}")
+    // Get user by id - LIBRARIAN only
+    // GET http://localhost:8070/api/user/1
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    // Get all users
-    @GetMapping("/")
+    // Get all users - LIBRARIAN only
+    // GET http://localhost:8070/api/user/all
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @GetMapping("/all")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }

@@ -19,13 +19,15 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // Register endpoint
+    // Register endpoint - public
+    // POST http://localhost:8070/api/auth/register
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
         return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
     }
 
-    // Login endpoint
+    // Login endpoint - public
+    // POST http://localhost:8070/api/auth/login
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> login(@Valid @RequestBody AuthenticationRequestDto request) {
         return ResponseEntity.ok(authService.login(request));

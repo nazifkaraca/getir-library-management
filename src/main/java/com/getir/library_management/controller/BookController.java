@@ -29,19 +29,22 @@ public class BookController {
     private final BookService bookService;
 
     // Add book - LIBRARIAN only
-    @PostMapping
+    // POST http://localhost:8070/api/book
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @PostMapping
     public ResponseEntity<BookResponseDto> addBook(@Valid @RequestBody CreateBookRequestDto request) {
         return new ResponseEntity<>(bookService.addBook(request), HttpStatus.CREATED);
     }
 
     // Get book by ID - public
+    // GET http://localhost:8070/api/book/1
     @GetMapping("/{id}")
     public ResponseEntity<BookResponseDto> getBookById(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
-    // Search books with pagination
+    // Search books with pagination - public
+    // GET http://localhost:8070/api/book/search?title=java&page=0&size=10&sort=title,asc
     @GetMapping("/search")
     public ResponseEntity<Page<BookResponseDto>> searchBooks(
             @RequestParam(required = false) String title,
@@ -54,16 +57,18 @@ public class BookController {
     }
 
     // Update book - LIBRARIAN only
-    @PutMapping("/{id}")
+    // PUT http://localhost:8070/api/book/1
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @PutMapping("/{id}")
     public ResponseEntity<BookResponseDto> updateBook(@PathVariable Long id,
                                                       @Valid @RequestBody UpdateBookRequestDto request) {
         return ResponseEntity.ok(bookService.updateBook(id, request));
     }
 
     // Delete book - LIBRARIAN only
-    @DeleteMapping("/{id}")
+    // DELETE http://localhost:8070/api/book/1
     @PreAuthorize("hasRole('LIBRARIAN')")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
