@@ -46,8 +46,8 @@ public class BookController {
     public ResponseEntity<Page<BookResponseDto>> searchBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
-            @RequestParam(required = false) String genre,
             @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) String genre,
             @ParameterObject
             @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(bookService.searchBooks(title, author, isbn, genre, pageable));

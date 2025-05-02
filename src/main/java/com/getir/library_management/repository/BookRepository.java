@@ -20,14 +20,14 @@ public interface BookRepository extends JpaRepository<Book, Long>  {
     SELECT b FROM Book b
     WHERE (:title IS NULL OR LOWER(b.title) LIKE CONCAT('%', LOWER(CAST(:title AS string)), '%'))
       AND (:author IS NULL OR LOWER(b.author) LIKE CONCAT('%', LOWER(CAST(:author AS string)), '%'))
-      AND (:genre IS NULL OR LOWER(b.genre) LIKE CONCAT('%', LOWER(CAST(:genre AS string)), '%'))
       AND (:isbn IS NULL OR LOWER(b.isbn) LIKE CONCAT('%', LOWER(CAST(:isbn AS string)), '%'))
+      AND (:genre IS NULL OR LOWER(b.genre) LIKE CONCAT('%', LOWER(CAST(:genre AS string)), '%'))
     """)
     Page<Book> searchBooks(
             @Param("title") String title,
             @Param("author") String author,
-            @Param("genre") String genre,
             @Param("isbn") String isbn,
+            @Param("genre") String genre,
             Pageable pageable
     );
 }
