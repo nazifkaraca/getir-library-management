@@ -21,7 +21,6 @@ public class BorrowingController {
 
     private final BorrowingService borrowingService;
 
-
     // Borrow book
     @PostMapping
     public ResponseEntity<BorrowResponseDto> borrowBook(@RequestBody @Valid BorrowRequestDto request) {
