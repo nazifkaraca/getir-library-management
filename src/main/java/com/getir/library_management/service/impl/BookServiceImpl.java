@@ -12,6 +12,8 @@ import com.getir.library_management.service.interfaces.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
 
+    @CacheEvict(value = "bookSearchCache", allEntries = true) // Clear redis cache when a new book added
     @Override
     public BookResponseDto addBook(CreateBookRequestDto request) throws BookAlreadyExistsException {
         // Check if book exists
@@ -84,6 +87,7 @@ public class BookServiceImpl implements BookService {
         return modelMapper.map(book, BookResponseDto.class);
     }
 
+    @Cacheable(value = "bookSearchCache", key = "#title + '_' + #author + '_' + #isbn + '_' + #genre + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
     @Override
     public Page<BookResponseDto> searchBooks(String title, String author, String isbn, String genre, Pageable pageable) {
         return bookRepository.searchBooks(title, author, isbn, genre, pageable)
