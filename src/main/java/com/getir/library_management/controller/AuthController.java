@@ -32,4 +32,6 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponseDto> login(@Valid @RequestBody AuthenticationRequestDto request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+
 }

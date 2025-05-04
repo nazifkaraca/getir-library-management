@@ -1,14 +1,15 @@
 package com.getir.library_management.dto.Book;
 
-import com.getir.library_management.entity.Role;
 import lombok.*;
+
+import java.io.Serializable;
 
 // Used to return book information to the client
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookResponseDto {
+public class BookResponseDto implements Serializable {
 
     private Long id;
     private String title;
