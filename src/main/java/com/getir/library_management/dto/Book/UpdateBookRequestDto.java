@@ -3,12 +3,13 @@ package com.getir.library_management.dto.Book;
 import com.getir.library_management.entity.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 // Used when updating book details
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateBookRequestDto {
 
     @Schema(

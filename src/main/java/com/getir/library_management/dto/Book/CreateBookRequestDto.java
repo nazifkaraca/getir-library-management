@@ -3,13 +3,15 @@ package com.getir.library_management.dto.Book;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 // Used when adding a new book to the system
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateBookRequestDto {
 
     @Schema(
@@ -38,5 +40,7 @@ public class CreateBookRequestDto {
 
     private String genre;
     private String publicationDate;
+
+    @NotNull(message = "Availability is required.")
     private boolean availability;
 }

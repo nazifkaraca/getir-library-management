@@ -1,14 +1,13 @@
 package com.getir.library_management.dto.Book;
 
 import com.getir.library_management.entity.Role;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 // Used to return book information to the client
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BookResponseDto {
 
     private Long id;
