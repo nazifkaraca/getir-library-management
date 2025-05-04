@@ -46,25 +46,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDto updateBook(Long id, UpdateBookRequestDto request) {
-        // Check if book exists by ID
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
 
-        // Map update book request with book entity
+        // Check before setting ISBN
+        if (bookRepository.existsByIsbn(request.getIsbn()) && !book.getIsbn().equals(request.getIsbn())) {
+            throw new BookAlreadyExistsException(ErrorMessages.BOOK_EXISTS);
+        }
+
+        // Set after validation
         book.setAuthor(request.getAuthor());
         book.setIsbn(request.getIsbn());
         book.setGenre(request.getGenre());
         book.setTitle(request.getTitle());
         book.setPublicationDate(request.getPublicationDate());
 
-        // Check if book exists by ISBN
-        if (bookRepository.existsByIsbn(request.getIsbn())) {
-            throw new BookAlreadyExistsException(ErrorMessages.BOOK_EXISTS);
-        }
-
-        // Update book
         Book updatedBook = bookRepository.save(book);
-        // Return updated book mapped on book response dto
         return modelMapper.map(updatedBook, BookResponseDto.class);
     }
 
@@ -100,7 +97,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll()
                 .stream()
                 .map(book -> modelMapper.map(book, BookResponseDto.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

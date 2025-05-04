@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class BookControllerIntegrationTest {
 
     @Autowired
@@ -172,13 +174,13 @@ class BookControllerIntegrationTest {
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request1)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(post("/api/book")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request2)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/api/book/all")
                         .header("Authorization", token))
@@ -232,28 +234,27 @@ class BookControllerIntegrationTest {
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
         Long bookId = objectMapper.readTree(response).get("id").asLong();
 
         String updatePayload = """
-                {
-                    "id": %d,
-                    "title": "Updated Title",
-                    "author": "Author",
-                    "isbn": "4444444444444",
-                    "genre": "Mystery",
-                    "availability": true
-                }
-                """.formatted(bookId);
+            {
+                "id": %d,
+                "title": "Updated Title",
+                "author": "Author",
+                "isbn": "4444444444444",
+                "genre": "Mystery",
+                "availability": true
+            }
+            """.formatted(bookId);
 
-        mockMvc.perform(put("/api/book")
+        mockMvc.perform(put("/api/book/" + bookId)
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatePayload))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Updated Title"));
     }
-
 }

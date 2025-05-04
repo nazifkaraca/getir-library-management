@@ -12,12 +12,5 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-  redis:
-    host: localhost
-    port: 6379
-    timeout: 5000
-    connect-timeout: 5000
-    lettuce:
-      shutdown-timeout: 0
-    cache:
-      type: none
+  cache:
+    type: none
