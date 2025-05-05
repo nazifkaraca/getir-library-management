@@ -15,13 +15,13 @@ import java.util.List;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth") // JWT required for all endpoints
+@PreAuthorize("hasRole('LIBRARIAN')")
 public class UserController {
 
     private final UserService userService;
 
     // Update endpoint - LIBRARIAN only
     // PUT http://localhost:8070/api/user/1
-    @PreAuthorize("hasRole('LIBRARIAN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequestDto request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
@@ -29,7 +29,6 @@ public class UserController {
 
     // Hard delete endpoint (permanently remove the user) - LIBRARIAN only
     // DELETE http://localhost:8070/api/user/hard-delete/1
-    @PreAuthorize("hasRole('LIBRARIAN')")
     @DeleteMapping("/hard-delete/{id}")
     public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
         userService.hardDeleteUser(id);
@@ -38,7 +37,6 @@ public class UserController {
 
     // Soft delete endpoint (mark user as deleted) - LIBRARIAN only
     // DELETE http://localhost:8070/api/user/soft-delete/1
-    @PreAuthorize("hasRole('LIBRARIAN')")
     @DeleteMapping("/soft-delete/{id}")
     public ResponseEntity<Void> softDelete(@PathVariable Long id) {
         userService.softDeleteUser(id);
@@ -47,7 +45,6 @@ public class UserController {
 
     // Get user by id - LIBRARIAN only
     // GET http://localhost:8070/api/user/1
-    @PreAuthorize("hasRole('LIBRARIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
@@ -55,7 +52,6 @@ public class UserController {
 
     // Get all users - LIBRARIAN only
     // GET http://localhost:8070/api/user/all
-    @PreAuthorize("hasRole('LIBRARIAN')")
     @GetMapping("/all")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());

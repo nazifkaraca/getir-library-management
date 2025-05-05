@@ -7,6 +7,8 @@ import com.getir.library_management.entity.Book;
 import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.exception.custom.BookAlreadyExistsException;
 import com.getir.library_management.exception.custom.BookNotFoundException;
+import com.getir.library_management.logging.audit.AuditLogService;
+import com.getir.library_management.logging.audit.CurrentUserService;
 import com.getir.library_management.repository.BookRepository;
 import com.getir.library_management.service.interfaces.BookService;
 import jakarta.transaction.Transactional;
@@ -28,6 +30,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
+    private final AuditLogService auditLogService;
+    private final CurrentUserService currentUserService;
 
     @CacheEvict(value = "bookSearchCache", allEntries = true) // Clear redis cache when a new book added
     @Override
@@ -40,6 +44,12 @@ public class BookServiceImpl implements BookService {
         Book book = modelMapper.map(request, Book.class);
         // Save book
         Book savedBook = bookRepository.save(book);
+        // Logging
+        auditLogService.logAction(
+                currentUserService.getEmail(),
+                "ADD_BOOK",
+                "Added book: " + savedBook.getTitle()
+        );
         // Return mapped book response
         return modelMapper.map(savedBook, BookResponseDto.class);
     }
@@ -60,8 +70,14 @@ public class BookServiceImpl implements BookService {
         book.setGenre(request.getGenre());
         book.setTitle(request.getTitle());
         book.setPublicationDate(request.getPublicationDate());
-
+        // Save updated book to database
         Book updatedBook = bookRepository.save(book);
+        // Logging
+        auditLogService.logAction(
+                currentUserService.getEmail(),
+                "UPDATE_BOOK",
+                "Updated book ID: " + id
+        );
         return modelMapper.map(updatedBook, BookResponseDto.class);
     }
 
@@ -73,6 +89,12 @@ public class BookServiceImpl implements BookService {
 
         // Delete book
         bookRepository.delete(book);
+        // Logging
+        auditLogService.logAction(
+                currentUserService.getEmail(),
+                "DELETE_BOOK",
+                "Deleted book ID: " + id
+        );
     }
 
     @Override

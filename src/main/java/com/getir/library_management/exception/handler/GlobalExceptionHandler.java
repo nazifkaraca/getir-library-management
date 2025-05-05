@@ -3,6 +3,7 @@ package com.getir.library_management.exception.handler;
 import com.getir.library_management.exception.ErrorResponse;
 import com.getir.library_management.exception.custom.*;
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,100 +18,100 @@ import java.time.LocalDateTime;
 
 // This class handles all exceptions globally in the application
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    // Handle RuntimeException and send a standard error response
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
+        log.error("Unhandled RuntimeException occurred: {}", ex.getMessage(), ex);
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // Capture current time
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value()) // Set HTTP status code
-                .error("Internal Server Error") // Human-readable error type
-                .message(ex.getMessage()) // Actual exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("Internal Server Error")
+                .message(ex.getMessage())
                 .build();
 
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR); // Return error response with HTTP status
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // Email already exists exception handler
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
+        log.warn("Attempt to register with existing email: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // When the error happened
-                .status(HttpStatus.CONFLICT.value()) // 404 status code
-                .error("Email Already Exists") // Short title
-                .message(ex.getMessage()) // Exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Email Already Exists")
+                .message(ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    // User not found exception handler
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        log.warn("User not found: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // When the error happened
-                .status(HttpStatus.NOT_FOUND.value()) // 404 status code
-                .error("User Not Found") // Short title
-                .message(ex.getMessage()) // Exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("User Not Found")
+                .message(ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // Borrowing not found exception handler
     @ExceptionHandler(BorrowingNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleBorrowingNotFoundException(BorrowingNotFoundException ex) {
+        log.warn("Borrowing not found: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // When the error happened
-                .status(HttpStatus.NOT_FOUND.value()) // 404 status code
-                .error("Borrowing Not Found") // Short title
-                .message(ex.getMessage()) // Exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Borrowing Not Found")
+                .message(ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // Book not found exception handler
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleBookNotFoundException(BookNotFoundException ex) {
+        log.warn("Book not found: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // When the error happened
-                .status(HttpStatus.NOT_FOUND.value()) // 404 status code
-                .error("Book Not Found") // Short title
-                .message(ex.getMessage()) // Exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Book Not Found")
+                .message(ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // Book already exists exception handler
     @ExceptionHandler(BookAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
+        log.warn("Attempt to create a book that already exists: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // When the error happened
-                .status(HttpStatus.CONFLICT.value()) // 404 status code
-                .error("Book Already Exists") // Short title
-                .message(ex.getMessage()) // Exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Book Already Exists")
+                .message(ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    // Book already exists exception handler
     @ExceptionHandler(BookUnavailableException.class)
     public ResponseEntity<ErrorResponse> handleBookUnavailableException(BookUnavailableException ex) {
+        log.warn("Book unavailable: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // When the error happened
-                .status(HttpStatus.CONFLICT.value()) // 404 status code
-                .error("The book is currently borrowed by another user.") // Short title
-                .message(ex.getMessage()) // Exception message
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("The book is currently borrowed by another user.")
+                .message(ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    // Handles validation errors (e.g., @Valid failures)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors()
@@ -118,6 +119,8 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .findFirst()
                 .orElse("Validation error");
+
+        log.warn("Validation failed: {}", message);
 
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -129,9 +132,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Handles missing request parameters
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
+        log.warn("Missing request parameter: {}", ex.getParameterName());
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -142,9 +145,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Handles unsupported HTTP methods
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        log.warn("Unsupported HTTP method: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.METHOD_NOT_ALLOWED.value())
@@ -157,6 +160,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        log.warn("Access denied: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
@@ -169,11 +173,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Illegal argument: {}", ex.getMessage());
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now()) // Error time
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
-                .error("Invalid Sort Field") // Human-readable message
-                .message("The sort field is invalid or does not exist in Book entity.") // Developer/user hint
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Invalid Sort Field")
+                .message("The sort field is invalid or does not exist in Book entity.")
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

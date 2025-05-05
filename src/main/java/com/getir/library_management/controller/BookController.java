@@ -44,6 +44,13 @@ public class BookController {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
+    // Get all books - public
+    @GetMapping("/all")
+    // GET http://localhost:8070/api/book/all
+    public ResponseEntity<List<BookResponseDto>> getAllBooks() {
+        return ResponseEntity.ok(bookService.getAllBooks());
+    }
+
     // Search books with pagination - public
     // GET http://localhost:8070/api/book/search?title=java&page=0&size=10&sort=title,asc
     @GetMapping("/search")
@@ -74,11 +81,4 @@ public class BookController {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
-
-    // Get all books - public
-    @GetMapping("/all")
-    public ResponseEntity<List<BookResponseDto>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
-    }
-
 }

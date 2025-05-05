@@ -10,6 +10,8 @@ import com.getir.library_management.exception.custom.BookNotFoundException;
 import com.getir.library_management.exception.custom.BookUnavailableException;
 import com.getir.library_management.exception.custom.BorrowingNotFoundException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
+import com.getir.library_management.logging.audit.AuditLogService;
+import com.getir.library_management.logging.audit.CurrentUserService;
 import com.getir.library_management.repository.BookRepository;
 import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
@@ -27,6 +29,8 @@ public class BorrowingServiceImpl implements BorrowingService {
     private final BorrowingRepository borrowingRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final AuditLogService auditLogService;
+    private final CurrentUserService currentUserService;
 
     // Borrow a book
     @Override
@@ -53,6 +57,13 @@ public class BorrowingServiceImpl implements BorrowingService {
 
         Borrowing saved = borrowingRepository.save(borrowing);
 
+        // audit log
+        auditLogService.logAction(
+                currentUserService.getEmail(),
+                "BORROW_BOOK",
+                "Book ID: " + book.getId() + ", Title: " + book.getTitle()
+        );
+
         return BorrowResponseDto.builder()
                 .id(saved.getId())
                 .userFullName(user.getFullName())
@@ -75,6 +86,13 @@ public class BorrowingServiceImpl implements BorrowingService {
 
         borrowedBook.setReturnDate(LocalDate.now());
         borrowingRepository.save(borrowedBook);
+
+        // audit log
+        auditLogService.logAction(
+                currentUserService.getEmail(),
+                "RETURN_BOOK",
+                "Book ID: " + book.getId() + ", Title: " + book.getTitle()
+        );
 
         return BorrowResponseDto.builder()
                 .id(borrowedBook.getId())

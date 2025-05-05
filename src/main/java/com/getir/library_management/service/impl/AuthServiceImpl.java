@@ -9,6 +9,7 @@ import com.getir.library_management.entity.User;
 import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
+import com.getir.library_management.logging.audit.AuditLogService;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.interfaces.AuthService;
 import com.getir.library_management.util.JwtService;
@@ -28,41 +29,48 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final ModelMapper modelMapper;
+    private final AuditLogService auditLogService;
 
     // Register
     @Override
     public UserResponseDto register(RegisterRequestDto request) {
-        // Check if the email is already registered
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            auditLogService.logAction("anonymous", "REGISTER_FAILED", "Email already registered: " + request.getEmail());
             throw new EmailAlreadyExistsException("Email is already registered: " + request.getEmail());
         }
 
-        // Create new user
         User newUser = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword())) // Encrypt password with BCrypt
-                .role(Role.ROLE_USER) // Assign default role of "User"
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.ROLE_USER)
                 .build();
 
-        // Save new user
         User savedUser = userRepository.save(newUser);
 
-        // Return user response DTO
+        auditLogService.logAction(savedUser.getEmail(), "REGISTER_SUCCESS", "New user registered.");
+
         return modelMapper.map(savedUser, UserResponseDto.class);
     }
+
 
     // Login
     @Override
     public AuthenticationResponseDto login(AuthenticationRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    auditLogService.logAction("anonymous", "LOGIN_FAILED", "Email not found: " + request.getEmail());
+                    return new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
+                });
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            auditLogService.logAction(user.getEmail(), "LOGIN_FAILED", "Incorrect password.");
             throw new BadCredentialsException("Invalid credentials.");
         }
 
         String token = jwtService.generateToken(user);
+
+        auditLogService.logAction(user.getEmail(), "LOGIN_SUCCESS", "JWT token issued.");
 
         return AuthenticationResponseDto.builder()
                 .token(token)

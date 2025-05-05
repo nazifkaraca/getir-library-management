@@ -19,5 +19,5 @@ public interface BookService {
 
     void deleteBook(Long id);
 
-    List<BookResponseDto> getAllBooks(); // optional utility
+    List<BookResponseDto> getAllBooks();
 }
