@@ -1,5 +1,6 @@
 package com.getir.library_management.service.impl;
 
+import com.getir.library_management.dto.Book.BookAvailabilityDto;
 import com.getir.library_management.dto.Borrow.BorrowRequestDto;
 import com.getir.library_management.dto.Borrow.BorrowResponseDto;
 import com.getir.library_management.entity.Book;
@@ -31,8 +32,9 @@ public class BorrowingServiceImpl implements BorrowingService {
     private final BookRepository bookRepository;
     private final AuditLogService auditLogService;
     private final CurrentUserService currentUserService;
+    private final BookAvailabilityServiceImpl bookAvailabilityService;
 
-    // Borrow a book
+    // Borrow a book for a user if the book is available
     @Override
     public BorrowResponseDto borrowBook(BorrowRequestDto request) {
         User user = userRepository.findById(request.getUserId())
@@ -41,13 +43,21 @@ public class BorrowingServiceImpl implements BorrowingService {
         Book book = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
 
+        // Check if the book is currently available
         if (!book.isAvailability()) {
             throw new BookUnavailableException(ErrorMessages.BOOK_UNAVAILABLE);
         }
 
+        // Set book availability to false and notify via WebFlux stream
         book.setAvailability(false);
         bookRepository.save(book);
 
+        // Notify subscribers that the book is not available now
+        bookAvailabilityService.publishAvailabilityUpdate(
+                new BookAvailabilityDto(book.getId(), book.getTitle(), false)
+        );
+
+        // Create a new borrowing record
         Borrowing borrowing = Borrowing.builder()
                 .user(user)
                 .book(book)
@@ -57,13 +67,14 @@ public class BorrowingServiceImpl implements BorrowingService {
 
         Borrowing saved = borrowingRepository.save(borrowing);
 
-        // audit log
+        // Write an audit log for the borrow action
         auditLogService.logAction(
                 currentUserService.getEmail(),
                 "BORROW_BOOK",
                 "Book ID: " + book.getId() + ", Title: " + book.getTitle()
         );
 
+        // Return response DTO
         return BorrowResponseDto.builder()
                 .id(saved.getId())
                 .userFullName(user.getFullName())
@@ -74,7 +85,7 @@ public class BorrowingServiceImpl implements BorrowingService {
                 .build();
     }
 
-    // Return borrowed book
+    // Return a borrowed book and mark it as available
     @Override
     public BorrowResponseDto returnBook(Long borrowingId) {
         Borrowing borrowedBook = borrowingRepository.findById(borrowingId)
@@ -84,16 +95,22 @@ public class BorrowingServiceImpl implements BorrowingService {
         book.setAvailability(true);
         bookRepository.save(book);
 
+        // Notify subscribers that the book is now available
+        bookAvailabilityService.publishAvailabilityUpdate(
+                new BookAvailabilityDto(book.getId(), book.getTitle(), true)
+        );
+
         borrowedBook.setReturnDate(LocalDate.now());
         borrowingRepository.save(borrowedBook);
 
-        // audit log
+        // Write an audit log for the return action
         auditLogService.logAction(
                 currentUserService.getEmail(),
                 "RETURN_BOOK",
                 "Book ID: " + book.getId() + ", Title: " + book.getTitle()
         );
 
+        // Return response DTO
         return BorrowResponseDto.builder()
                 .id(borrowedBook.getId())
                 .userFullName(borrowedBook.getUser().getFullName())
@@ -104,7 +121,7 @@ public class BorrowingServiceImpl implements BorrowingService {
                 .build();
     }
 
-    // Get all borrowed books
+    // Retrieve all borrow records
     @Override
     public List<BorrowResponseDto> getAllBorrowings() {
         return borrowingRepository.findAll().stream()
@@ -119,7 +136,7 @@ public class BorrowingServiceImpl implements BorrowingService {
                 ).toList();
     }
 
-    // View all borrowings of a user
+    // Retrieve all borrowings for a specific user
     @Override
     public List<BorrowResponseDto> getBorrowingsByUser(Long userId) {
         userRepository.findById(userId)
@@ -137,6 +154,7 @@ public class BorrowingServiceImpl implements BorrowingService {
                 ).toList();
     }
 
+    // Retrieve list of overdue books (not returned and past due date)
     @Override
     public List<BorrowResponseDto> getOverdueBooks() {
         LocalDate today = LocalDate.now();
