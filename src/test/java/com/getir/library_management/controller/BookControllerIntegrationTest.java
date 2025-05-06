@@ -4,14 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getir.library_management.dto.Book.CreateBookRequestDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
+import com.getir.library_management.logging.audit.AuditLogService;
+import com.getir.library_management.logging.audit.CurrentUserService;
 import com.getir.library_management.repository.BookRepository;
 import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
+import com.getir.library_management.service.impl.BookAvailabilityServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -44,6 +49,16 @@ class BookControllerIntegrationTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private AuditLogService auditLogService;
+
+    @MockBean
+    private CurrentUserService currentUserService;
+
+    @MockBean
+    private BookAvailabilityServiceImpl bookAvailabilityService;
+
 
     private String token;
 

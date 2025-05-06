@@ -8,6 +8,7 @@ import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
+import com.getir.library_management.logging.audit.AuditLogService;
 import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.impl.AuthServiceImpl;
 import com.getir.library_management.util.JwtService;
@@ -35,7 +36,9 @@ class AuthServiceImplTest {
     private JwtService jwtService;
     @Mock
     private ModelMapper modelMapper;
-
+    @Mock
+    private AuditLogService auditLogService;
+    
     @InjectMocks
     private AuthServiceImpl authService;
 

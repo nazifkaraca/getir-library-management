@@ -7,6 +7,8 @@ import com.getir.library_management.dto.Book.UpdateBookRequestDto;
 import com.getir.library_management.entity.Book;
 import com.getir.library_management.exception.custom.BookAlreadyExistsException;
 import com.getir.library_management.exception.custom.BookNotFoundException;
+import com.getir.library_management.logging.audit.AuditLogService;
+import com.getir.library_management.logging.audit.CurrentUserService;
 import com.getir.library_management.repository.BookRepository;
 import com.getir.library_management.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,11 @@ class BookServiceImplTest {
     private BookRepository bookRepository;
     @Mock
     private ModelMapper modelMapper;
+    @Mock
+    private CurrentUserService currentUserService;
+    @Mock
+    private AuditLogService auditLogService;
+
     @InjectMocks
     private BookServiceImpl bookService;
 

@@ -10,7 +10,7 @@ spring:
   security:
     user:
       name: admin
-      password: zkxnvzlknvakjnvzjxbvzhbxvxjz12412412_-
+      password: 1234
   cache:
     type: redis
   data:
@@ -25,12 +25,15 @@ spring:
       hibernate:
         format_sql: true
 
+jwt:
+  secret: a2V5LWZvci1naXRodWItaXNzdWUtZGVtbzEyMzQ1Njc4OQ==
+
 logging:
   level:
-    root: INFO
-    com.getir.library_management: DEBUG
+    root: WARN
+    org.springframework.security: ERROR
+    com.getir.library_management: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
   file:
     name: logs/library-system.log
-

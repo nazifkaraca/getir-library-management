@@ -9,9 +9,12 @@ import com.getir.library_management.exception.custom.BookNotFoundException;
 import com.getir.library_management.exception.custom.BookUnavailableException;
 import com.getir.library_management.exception.custom.BorrowingNotFoundException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
+import com.getir.library_management.logging.audit.AuditLogService;
+import com.getir.library_management.logging.audit.CurrentUserService;
 import com.getir.library_management.repository.BookRepository;
 import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
+import com.getir.library_management.service.impl.BookAvailabilityServiceImpl;
 import com.getir.library_management.service.impl.BorrowingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +37,13 @@ class BorrowingServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    private BookAvailabilityServiceImpl bookAvailabilityService;
+    @Mock
+    private AuditLogService auditLogService;
+    @Mock
+    private CurrentUserService currentUserService;
+
     @InjectMocks
     private BorrowingServiceImpl borrowingService;
 
