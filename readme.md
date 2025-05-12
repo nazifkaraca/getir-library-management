@@ -121,7 +121,7 @@ http://localhost:8080/swagger-ui/index.html
 
 ## 📬 Postman Collection
 
-A complete Postman Collection is included to test all features:
+A complete Postman Collection is included to test all features: <h3><a href="https://postman.co/workspace/Personal-Workspace~df22195b-a6bf-4bb0-8f17-2502150396c2/collection/35081217-2e7edf5a-ccfd-4666-8b56-a3d826bb14bd?action=share&creator=35081217&active-environment=35081217-fc0abc9e-3263-4c57-9621-4ff61e38a93e">Go Testing</a></h3>
 
 * Grouped by: Auth, User, Book, Borrowing
 * Includes example requests and responses
