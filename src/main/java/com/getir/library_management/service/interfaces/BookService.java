@@ -1,8 +1,8 @@
 package com.getir.library_management.service.interfaces;
 
-import com.getir.library_management.dto.Book.BookResponseDto;
-import com.getir.library_management.dto.Book.CreateBookRequestDto;
-import com.getir.library_management.dto.Book.UpdateBookRequestDto;
+import com.getir.library_management.dto.book.BookResponseDto;
+import com.getir.library_management.dto.book.CreateBookRequestDto;
+import com.getir.library_management.dto.book.UpdateBookRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,10 +1,10 @@
-package com.getir.library_management.dto.Auth;
+package com.getir.library_management.dto.auth;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class AuthenticationResponseDto {
+public class LoginResponseDto {
     private String token;
 }

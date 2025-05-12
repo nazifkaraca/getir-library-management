@@ -1,16 +1,16 @@
-package com.getir.library_management.dto.Book;
+package com.getir.library_management.dto.book;
 
-import com.getir.library_management.entity.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-// Used when updating book details
+// Used when adding a new book to the system
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateBookRequestDto {
+public class CreateBookRequestDto {
 
     @Schema(
             description = "Book's title",
@@ -33,9 +33,12 @@ public class UpdateBookRequestDto {
             example = "Amat",
             defaultValue = "9789750503726"
     )
+    @NotBlank(message = "ISBN is required.")
     private String isbn;
 
     private String genre;
     private String publicationDate;
+
+    @NotNull(message = "Availability is required.")
     private boolean availability;
 }

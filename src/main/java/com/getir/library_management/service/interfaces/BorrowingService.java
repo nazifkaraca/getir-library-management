@@ -1,8 +1,8 @@
 package com.getir.library_management.service.interfaces;
 
 
-import com.getir.library_management.dto.Borrow.BorrowRequestDto;
-import com.getir.library_management.dto.Borrow.BorrowResponseDto;
+import com.getir.library_management.dto.borrow.BorrowRequestDto;
+import com.getir.library_management.dto.borrow.BorrowResponseDto;
 
 import java.util.List;
 

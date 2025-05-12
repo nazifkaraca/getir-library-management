@@ -1,7 +1,7 @@
 package com.getir.library_management.service;
 
-import com.getir.library_management.dto.User.UpdateUserRequestDto;
-import com.getir.library_management.dto.User.UserResponseDto;
+import com.getir.library_management.dto.user.UpdateUserRequestDto;
+import com.getir.library_management.dto.user.UserResponseDto;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.repository.UserRepository;

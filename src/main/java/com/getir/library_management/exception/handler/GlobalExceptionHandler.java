@@ -1,6 +1,6 @@
 package com.getir.library_management.exception.handler;
 
-import com.getir.library_management.exception.ErrorMessages;
+import com.getir.library_management.exception.ExceptionMessages;
 import com.getir.library_management.exception.ErrorResponse;
 import com.getir.library_management.exception.custom.*;
 import io.jsonwebtoken.JwtException;
@@ -35,31 +35,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex) {
         log.warn("Book not found: {}", ex.getMessage());
-        return new ResponseEntity<>(buildErrorResponse(HttpStatus.NOT_FOUND, "Book Not Found", ErrorMessages.BOOK_NOT_FOUND), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(buildErrorResponse(HttpStatus.NOT_FOUND, "Book Not Found", ExceptionMessages.BOOK_NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BookAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleBookAlreadyExists(BookAlreadyExistsException ex) {
         log.warn("Book already exists: {}", ex.getMessage());
-        return new ResponseEntity<>(buildErrorResponse(HttpStatus.CONFLICT, "Book Already Exists", ErrorMessages.BOOK_EXISTS), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(buildErrorResponse(HttpStatus.CONFLICT, "Book Already Exists", ExceptionMessages.BOOK_EXISTS), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
         log.warn("User not found: {}", ex.getMessage());
-        return new ResponseEntity<>(buildErrorResponse(HttpStatus.NOT_FOUND, "User Not Found", ErrorMessages.USER_NOT_FOUND), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(buildErrorResponse(HttpStatus.NOT_FOUND, "User Not Found", ExceptionMessages.USER_NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BookUnavailableException.class)
     public ResponseEntity<ErrorResponse> handleBookUnavailable(BookUnavailableException ex) {
         log.warn("Book unavailable: {}", ex.getMessage());
-        return new ResponseEntity<>(buildErrorResponse(HttpStatus.CONFLICT, "Book Unavailable", ErrorMessages.BOOK_UNAVAILABLE), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(buildErrorResponse(HttpStatus.CONFLICT, "Book Unavailable", ExceptionMessages.BOOK_UNAVAILABLE), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BorrowingNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleBorrowingNotFound(BorrowingNotFoundException ex) {
         log.warn("Borrowing not found: {}", ex.getMessage());
-        return new ResponseEntity<>(buildErrorResponse(HttpStatus.NOT_FOUND, "Borrowing Not Found", ErrorMessages.BORROWING_NOT_FOUND), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(buildErrorResponse(HttpStatus.NOT_FOUND, "Borrowing Not Found", ExceptionMessages.BORROWING_NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

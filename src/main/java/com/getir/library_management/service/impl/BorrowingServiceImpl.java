@@ -1,12 +1,12 @@
 package com.getir.library_management.service.impl;
 
-import com.getir.library_management.dto.Book.BookAvailabilityDto;
-import com.getir.library_management.dto.Borrow.BorrowRequestDto;
-import com.getir.library_management.dto.Borrow.BorrowResponseDto;
+import com.getir.library_management.dto.book.BookAvailabilityDto;
+import com.getir.library_management.dto.borrow.BorrowRequestDto;
+import com.getir.library_management.dto.borrow.BorrowResponseDto;
 import com.getir.library_management.entity.Book;
 import com.getir.library_management.entity.Borrowing;
 import com.getir.library_management.entity.User;
-import com.getir.library_management.exception.ErrorMessages;
+import com.getir.library_management.exception.ExceptionMessages;
 import com.getir.library_management.exception.custom.BookNotFoundException;
 import com.getir.library_management.exception.custom.BookUnavailableException;
 import com.getir.library_management.exception.custom.BorrowingNotFoundException;
@@ -38,14 +38,14 @@ public class BorrowingServiceImpl implements BorrowingService {
     @Override
     public BorrowResponseDto borrowBook(BorrowRequestDto request) {
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND));
 
         Book book = bookRepository.findById(request.getBookId())
-                .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
+                .orElseThrow(() -> new BookNotFoundException(ExceptionMessages.BOOK_NOT_FOUND));
 
         // Check if the book is currently available
         if (!book.isAvailability()) {
-            throw new BookUnavailableException(ErrorMessages.BOOK_UNAVAILABLE);
+            throw new BookUnavailableException(ExceptionMessages.BOOK_UNAVAILABLE);
         }
 
         // Set book availability to false and notify via WebFlux stream
@@ -89,7 +89,7 @@ public class BorrowingServiceImpl implements BorrowingService {
     @Override
     public BorrowResponseDto returnBook(Long borrowingId) {
         Borrowing borrowedBook = borrowingRepository.findById(borrowingId)
-                .orElseThrow(() -> new BorrowingNotFoundException(ErrorMessages.BORROWING_NOT_FOUND));
+                .orElseThrow(() -> new BorrowingNotFoundException(ExceptionMessages.BORROWING_NOT_FOUND));
 
         Book book = borrowedBook.getBook();
         book.setAvailability(true);
@@ -140,7 +140,7 @@ public class BorrowingServiceImpl implements BorrowingService {
     @Override
     public List<BorrowResponseDto> getBorrowingsByUser(Long userId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND));
 
         return borrowingRepository.findByUserId(userId).stream()
                 .map(borrowing -> BorrowResponseDto.builder()

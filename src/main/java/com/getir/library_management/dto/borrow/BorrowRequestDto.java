@@ -1,4 +1,4 @@
-package com.getir.library_management.dto.Borrow;
+package com.getir.library_management.dto.borrow;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

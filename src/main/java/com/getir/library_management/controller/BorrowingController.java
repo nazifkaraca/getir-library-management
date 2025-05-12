@@ -1,7 +1,7 @@
 package com.getir.library_management.controller;
 
-import com.getir.library_management.dto.Borrow.BorrowRequestDto;
-import com.getir.library_management.dto.Borrow.BorrowResponseDto;
+import com.getir.library_management.dto.borrow.BorrowRequestDto;
+import com.getir.library_management.dto.borrow.BorrowResponseDto;
 import com.getir.library_management.service.interfaces.BorrowingService;
 import com.getir.library_management.service.interfaces.OverdueReportService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,14 +32,6 @@ public class BorrowingController {
     @PostMapping
     public ResponseEntity<BorrowResponseDto> borrowBook(@RequestBody @Valid BorrowRequestDto request) {
         return new ResponseEntity<>(borrowingService.borrowBook(request), HttpStatus.CREATED);
-    }
-
-    // Return borrowed book
-    // PUT http://localhost:8070/api/borrowing/1
-    @PreAuthorize("hasRole('USER')")
-    @PutMapping("/return/{id}")
-    public ResponseEntity<BorrowResponseDto>  returnBook(@PathVariable Long id) {
-        return ResponseEntity.ok(borrowingService.returnBook(id));
     }
 
     // Get all borrowings of a user
@@ -79,4 +71,11 @@ public class BorrowingController {
         return ResponseEntity.ok().headers(headers).body(csv);
     }
 
+    // Return borrowed book
+    // PUT http://localhost:8070/api/borrowing/1
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/return/{id}")
+    public ResponseEntity<BorrowResponseDto>  returnBook(@PathVariable Long id) {
+        return ResponseEntity.ok(borrowingService.returnBook(id));
+    }
 }

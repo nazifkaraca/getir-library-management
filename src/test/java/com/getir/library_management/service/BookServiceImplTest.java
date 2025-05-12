@@ -1,9 +1,9 @@
 
 package com.getir.library_management.service;
 
-import com.getir.library_management.dto.Book.BookResponseDto;
-import com.getir.library_management.dto.Book.CreateBookRequestDto;
-import com.getir.library_management.dto.Book.UpdateBookRequestDto;
+import com.getir.library_management.dto.book.BookResponseDto;
+import com.getir.library_management.dto.book.CreateBookRequestDto;
+import com.getir.library_management.dto.book.UpdateBookRequestDto;
 import com.getir.library_management.entity.Book;
 import com.getir.library_management.exception.custom.BookAlreadyExistsException;
 import com.getir.library_management.exception.custom.BookNotFoundException;

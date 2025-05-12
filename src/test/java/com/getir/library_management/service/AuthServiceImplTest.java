@@ -1,9 +1,9 @@
 package com.getir.library_management.service;
 
-import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
-import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
-import com.getir.library_management.dto.User.RegisterRequestDto;
-import com.getir.library_management.dto.User.UserResponseDto;
+import com.getir.library_management.dto.auth.LoginRequestDto;
+import com.getir.library_management.dto.auth.LoginResponseDto;
+import com.getir.library_management.dto.user.RegisterRequestDto;
+import com.getir.library_management.dto.user.UserResponseDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
@@ -99,7 +99,7 @@ class AuthServiceImplTest {
     @Test
     void login_ShouldReturnToken_WhenCredentialsAreCorrect() {
         // Arrange
-        AuthenticationRequestDto request = new AuthenticationRequestDto();
+        LoginRequestDto request = new LoginRequestDto();
         request.setEmail("john.doe@getir.com");
         request.setPassword("Secure@123");
 
@@ -113,7 +113,7 @@ class AuthServiceImplTest {
         when(jwtService.generateToken(user)).thenReturn("jwt-token");
 
         // Act
-        AuthenticationResponseDto response = authService.login(request);
+        LoginResponseDto response = authService.login(request);
 
         // Assert
         assertNotNull(response);
@@ -123,7 +123,7 @@ class AuthServiceImplTest {
     @Test
     void login_ShouldThrowException_WhenUserNotFound() {
         // Arrange
-        AuthenticationRequestDto request = new AuthenticationRequestDto();
+        LoginRequestDto request = new LoginRequestDto();
         request.setEmail("nonexistent@getir.com");
 
         when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
@@ -135,7 +135,7 @@ class AuthServiceImplTest {
     @Test
     void login_ShouldThrowException_WhenPasswordIncorrect() {
         // Arrange
-        AuthenticationRequestDto request = new AuthenticationRequestDto();
+        LoginRequestDto request = new LoginRequestDto();
         request.setEmail("john.doe@getir.com");
         request.setPassword("wrongpass");
 

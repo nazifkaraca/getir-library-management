@@ -1,4 +1,4 @@
-package com.getir.library_management.dto.User;
+package com.getir.library_management.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

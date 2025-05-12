@@ -1,6 +1,6 @@
 package com.getir.library_management.controller;
 
-import com.getir.library_management.dto.Borrow.BorrowRequestDto;
+import com.getir.library_management.dto.borrow.BorrowRequestDto;
 import com.getir.library_management.entity.Book;
 import com.getir.library_management.entity.Borrowing;
 import com.getir.library_management.entity.Role;

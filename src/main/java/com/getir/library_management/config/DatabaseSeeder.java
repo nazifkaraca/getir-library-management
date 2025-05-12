@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Profile({"!prod", "!test"})
-public class DataLoader implements CommandLineRunner {
+public class DatabaseSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final BookRepository bookRepository;

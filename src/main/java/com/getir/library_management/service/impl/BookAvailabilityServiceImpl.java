@@ -1,6 +1,6 @@
 package com.getir.library_management.service.impl;
 
-import com.getir.library_management.dto.Book.BookAvailabilityDto;
+import com.getir.library_management.dto.book.BookAvailabilityDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;

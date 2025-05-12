@@ -1,7 +1,7 @@
 package com.getir.library_management.controller;
 
-import com.getir.library_management.dto.User.UpdateUserRequestDto;
-import com.getir.library_management.dto.User.UserResponseDto;
+import com.getir.library_management.dto.user.UpdateUserRequestDto;
+import com.getir.library_management.dto.user.UserResponseDto;
 import com.getir.library_management.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,20 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    // Get user by id - LIBRARIAN only
+    // GET http://localhost:8070/api/user/1
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    // Get all users - LIBRARIAN only
+    // GET http://localhost:8070/api/user/all
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 
     // Update endpoint - LIBRARIAN only
     // PUT http://localhost:8070/api/user/1
@@ -41,19 +55,5 @@ public class UserController {
     public ResponseEntity<Void> softDelete(@PathVariable Long id) {
         userService.softDeleteUser(id);
         return ResponseEntity.noContent().build();
-    }
-
-    // Get user by id - LIBRARIAN only
-    // GET http://localhost:8070/api/user/1
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
-    }
-
-    // Get all users - LIBRARIAN only
-    // GET http://localhost:8070/api/user/all
-    @GetMapping("/all")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

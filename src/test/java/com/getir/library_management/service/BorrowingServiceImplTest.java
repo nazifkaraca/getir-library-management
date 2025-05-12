@@ -1,7 +1,7 @@
 package com.getir.library_management.service;
 
-import com.getir.library_management.dto.Borrow.BorrowRequestDto;
-import com.getir.library_management.dto.Borrow.BorrowResponseDto;
+import com.getir.library_management.dto.borrow.BorrowRequestDto;
+import com.getir.library_management.dto.borrow.BorrowResponseDto;
 import com.getir.library_management.entity.Book;
 import com.getir.library_management.entity.Borrowing;
 import com.getir.library_management.entity.User;

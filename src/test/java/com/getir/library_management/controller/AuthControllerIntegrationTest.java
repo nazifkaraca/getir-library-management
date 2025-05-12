@@ -1,10 +1,9 @@
 package com.getir.library_management.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
-import com.getir.library_management.dto.User.RegisterRequestDto;
+import com.getir.library_management.dto.auth.LoginRequestDto;
+import com.getir.library_management.dto.user.RegisterRequestDto;
 import com.getir.library_management.entity.Role;
-import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.logging.audit.AuditLogService;
 import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
@@ -96,7 +95,7 @@ class AuthControllerIntegrationTest {
                 .role(Role.ROLE_USER)
                 .build());
 
-        AuthenticationRequestDto request = new AuthenticationRequestDto();
+        LoginRequestDto request = new LoginRequestDto();
         request.setEmail("login@getir.com");
         request.setPassword("1234!Abcd");
 
@@ -109,7 +108,7 @@ class AuthControllerIntegrationTest {
 
     @Test
     void shouldReturnUnauthorizedForInvalidLogin() throws Exception {
-        AuthenticationRequestDto request = new AuthenticationRequestDto();
+        LoginRequestDto request = new LoginRequestDto();
         request.setEmail("wrong@getir.com");
         request.setPassword("wrong");
 

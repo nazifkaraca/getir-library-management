@@ -1,6 +1,6 @@
 package com.getir.library_management.controller;
 
-import com.getir.library_management.dto.Book.BookAvailabilityDto;
+import com.getir.library_management.dto.book.BookAvailabilityDto;
 import com.getir.library_management.service.impl.BookAvailabilityServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

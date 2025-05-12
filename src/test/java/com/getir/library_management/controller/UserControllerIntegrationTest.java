@@ -1,7 +1,7 @@
 package com.getir.library_management.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.getir.library_management.dto.User.UpdateUserRequestDto;
+import com.getir.library_management.dto.user.UpdateUserRequestDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.repository.UserRepository;

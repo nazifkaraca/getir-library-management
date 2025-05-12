@@ -1,6 +1,6 @@
 package com.getir.library_management.exception;
 
-public class ErrorMessages {
+public class ExceptionMessages {
     public static final String BOOK_NOT_FOUND = "The requested book could not be found in the system. Please check the book ID or try a different search term.";
     public static final String BOOK_EXISTS = "A book with the same ISBN already exists in the library. Duplicate entries are not allowed.";
     public static final String USER_NOT_FOUND = "The specified user could not be located. Please ensure the user ID or email is correct.";

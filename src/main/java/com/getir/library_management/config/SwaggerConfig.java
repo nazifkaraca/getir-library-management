@@ -18,5 +18,5 @@ import org.springframework.context.annotation.Configuration;
         scheme = "bearer"
 )
 @Configuration
-public class OpenApiConfig {
+public class SwaggerConfig {
 }

@@ -1,7 +1,7 @@
 package com.getir.library_management.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.getir.library_management.dto.Book.CreateBookRequestDto;
+import com.getir.library_management.dto.book.CreateBookRequestDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.logging.audit.AuditLogService;
@@ -12,7 +12,6 @@ import com.getir.library_management.repository.UserRepository;
 import com.getir.library_management.service.impl.BookAvailabilityServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,8 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

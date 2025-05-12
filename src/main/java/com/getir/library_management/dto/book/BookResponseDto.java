@@ -1,4 +1,4 @@
-package com.getir.library_management.dto.Book;
+package com.getir.library_management.dto.book;
 
 import lombok.*;
 

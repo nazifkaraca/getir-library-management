@@ -1,8 +1,8 @@
 package com.getir.library_management.exception;
 
-import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
-import com.getir.library_management.dto.Book.CreateBookRequestDto;
-import com.getir.library_management.dto.User.RegisterRequestDto;
+import com.getir.library_management.dto.auth.LoginRequestDto;
+import com.getir.library_management.dto.book.CreateBookRequestDto;
+import com.getir.library_management.dto.user.RegisterRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getir.library_management.exception.custom.*;
 import com.getir.library_management.service.impl.AuthServiceImpl;
@@ -51,7 +51,7 @@ class GlobalExceptionHandlerTest {
         mockMvc.perform(get("/api/book/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Book Not Found"))
-                .andExpect(jsonPath("$.message").value(ErrorMessages.BOOK_NOT_FOUND));
+                .andExpect(jsonPath("$.message").value(ExceptionMessages.BOOK_NOT_FOUND));
     }
 
     @WithMockUser(username = "admin", roles = {"LIBRARIAN"})
@@ -75,7 +75,7 @@ class GlobalExceptionHandlerTest {
                         .content(validBookJson))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Book Already Exists"))
-                .andExpect(jsonPath("$.message").value(ErrorMessages.BOOK_EXISTS));
+                .andExpect(jsonPath("$.message").value(ExceptionMessages.BOOK_EXISTS));
     }
 
     @WithMockUser(username = "admin", roles = {"LIBRARIAN"})
@@ -110,7 +110,7 @@ class GlobalExceptionHandlerTest {
         mockMvc.perform(get("/api/user/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("User Not Found"))
-                .andExpect(jsonPath("$.message").value(ErrorMessages.USER_NOT_FOUND));
+                .andExpect(jsonPath("$.message").value(ExceptionMessages.USER_NOT_FOUND));
     }
 
     @WithMockUser
@@ -123,7 +123,7 @@ class GlobalExceptionHandlerTest {
         }
         """;
 
-        when(authService.login(any(AuthenticationRequestDto.class)))
+        when(authService.login(any(LoginRequestDto.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
 
         mockMvc.perform(post("/api/auth/login")

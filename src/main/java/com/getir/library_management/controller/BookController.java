@@ -1,15 +1,13 @@
 package com.getir.library_management.controller;
 
-import com.getir.library_management.dto.Book.BookResponseDto;
-import com.getir.library_management.dto.Book.CreateBookRequestDto;
-import com.getir.library_management.dto.Book.UpdateBookRequestDto;
-import com.getir.library_management.service.impl.BookServiceImpl;
+import com.getir.library_management.dto.book.BookResponseDto;
+import com.getir.library_management.dto.book.CreateBookRequestDto;
+import com.getir.library_management.dto.book.UpdateBookRequestDto;
 import com.getir.library_management.service.interfaces.BookService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.aop.support.AbstractExpressionPointcut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

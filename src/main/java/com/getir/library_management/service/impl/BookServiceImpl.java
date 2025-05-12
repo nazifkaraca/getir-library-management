@@ -1,10 +1,10 @@
 package com.getir.library_management.service.impl;
 
-import com.getir.library_management.dto.Book.BookResponseDto;
-import com.getir.library_management.dto.Book.CreateBookRequestDto;
-import com.getir.library_management.dto.Book.UpdateBookRequestDto;
+import com.getir.library_management.dto.book.BookResponseDto;
+import com.getir.library_management.dto.book.CreateBookRequestDto;
+import com.getir.library_management.dto.book.UpdateBookRequestDto;
 import com.getir.library_management.entity.Book;
-import com.getir.library_management.exception.ErrorMessages;
+import com.getir.library_management.exception.ExceptionMessages;
 import com.getir.library_management.exception.custom.BookAlreadyExistsException;
 import com.getir.library_management.exception.custom.BookNotFoundException;
 import com.getir.library_management.logging.audit.AuditLogService;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -40,7 +39,7 @@ public class BookServiceImpl implements BookService {
     public BookResponseDto addBook(CreateBookRequestDto request) throws BookAlreadyExistsException {
         // Check if book already exists by ISBN
         if (bookRepository.existsByIsbn(request.getIsbn())) {
-            throw new BookAlreadyExistsException(ErrorMessages.BOOK_EXISTS);
+            throw new BookAlreadyExistsException(ExceptionMessages.BOOK_EXISTS);
         }
 
         // Map request DTO to Book entity
@@ -65,11 +64,11 @@ public class BookServiceImpl implements BookService {
     public BookResponseDto updateBook(Long id, UpdateBookRequestDto request) {
         // Retrieve the book or throw an exception if not found
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
+                .orElseThrow(() -> new BookNotFoundException(ExceptionMessages.BOOK_NOT_FOUND));
 
         // Check for duplicate ISBN if it’s being changed
         if (bookRepository.existsByIsbn(request.getIsbn()) && !book.getIsbn().equals(request.getIsbn())) {
-            throw new BookAlreadyExistsException(ErrorMessages.BOOK_EXISTS);
+            throw new BookAlreadyExistsException(ExceptionMessages.BOOK_EXISTS);
         }
 
         // Update book fields
@@ -98,7 +97,7 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long id) {
         // Retrieve the book or throw an exception if not found
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
+                .orElseThrow(() -> new BookNotFoundException(ExceptionMessages.BOOK_NOT_FOUND));
 
         // Delete the book from the database
         bookRepository.delete(book);
@@ -116,7 +115,7 @@ public class BookServiceImpl implements BookService {
     public BookResponseDto getBookById(Long id) {
         // Retrieve the book or throw an exception if not found
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
+                .orElseThrow(() -> new BookNotFoundException(ExceptionMessages.BOOK_NOT_FOUND));
 
         // Map and return the book response DTO
         return modelMapper.map(book, BookResponseDto.class);

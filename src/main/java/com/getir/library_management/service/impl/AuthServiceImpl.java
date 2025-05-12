@@ -1,12 +1,12 @@
 package com.getir.library_management.service.impl;
 
-import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
-import com.getir.library_management.dto.Auth.AuthenticationResponseDto;
-import com.getir.library_management.dto.User.RegisterRequestDto;
-import com.getir.library_management.dto.User.UserResponseDto;
+import com.getir.library_management.dto.auth.LoginRequestDto;
+import com.getir.library_management.dto.auth.LoginResponseDto;
+import com.getir.library_management.dto.user.RegisterRequestDto;
+import com.getir.library_management.dto.user.UserResponseDto;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
-import com.getir.library_management.exception.ErrorMessages;
+import com.getir.library_management.exception.ExceptionMessages;
 import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
 import com.getir.library_management.exception.custom.UserNotFoundException;
 import com.getir.library_management.logging.audit.AuditLogService;
@@ -62,13 +62,13 @@ public class AuthServiceImpl implements AuthService {
 
     // Handles user login and JWT token generation
     @Override
-    public AuthenticationResponseDto login(AuthenticationRequestDto request)  {
+    public LoginResponseDto login(LoginRequestDto request)  {
         // Retrieve user by email or throw exception if not found
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     // Log failed login attempt
                     auditLogService.logAction("anonymous", "LOGIN_FAILED", "Email not found: " + request.getEmail());
-                    return new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
+                    return new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND);
                 });
 
         // Validate password
@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
         auditLogService.logAction(user.getEmail(), "LOGIN_SUCCESS", "JWT token issued.");
 
         // Return authentication response with token
-        return AuthenticationResponseDto.builder()
+        return LoginResponseDto.builder()
                 .token(token)
                 .build();
     }
