@@ -1,15 +1,20 @@
 package com.getir.library_management.config;
 
 import com.getir.library_management.entity.Book;
+import com.getir.library_management.entity.Borrowing;
 import com.getir.library_management.entity.Role;
 import com.getir.library_management.entity.User;
 import com.getir.library_management.repository.BookRepository;
+import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -18,27 +23,25 @@ public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BorrowingRepository borrowingRepository;
 
     @Override
     public void run(String... args) {
+
         if (userRepository.count() == 0) {
             // Add sample users
-            User librarian = User.builder()
-                    .fullName("Libby Librarian")
-                    .email("librarian@getir.com")
-                    .password(passwordEncoder.encode("1234"))
-                    .role(Role.ROLE_LIBRARIAN)
-                    .build();
+            // Librarian
+            userRepository.save(User.builder().fullName("Libby Librarian").email("librarian@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_LIBRARIAN).build());
 
-            User regularUser = User.builder()
-                    .fullName("John Reader")
-                    .email("user@getir.com")
-                    .password(passwordEncoder.encode("1234"))
-                    .role(Role.ROLE_USER)
-                    .build();
-
-            userRepository.save(librarian);
-            userRepository.save(regularUser);
+            // Users
+            userRepository.save(User.builder().fullName("John Reader").email("john@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("Alice Smith").email("alice@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("Bob Johnson").email("bob@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("Carol White").email("carol@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("David Brown").email("david@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("Eve Green").email("eve@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("Frank Gray").email("frank@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            userRepository.save(User.builder().fullName("Grace Black").email("grace@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
         }
 
         if (bookRepository.count() == 0) {
@@ -65,5 +68,68 @@ public class DataLoader implements CommandLineRunner {
             bookRepository.save(Book.builder().title("Artificial Intelligence: A Modern Approach").author("Stuart Russell").isbn("9780136042594").genre("AI").publicationDate("2010").availability(true).build());
             bookRepository.save(Book.builder().title("The Mythical Man-Month").author("Frederick P. Brooks Jr.").isbn("9780201835953").genre("Software Project Management").publicationDate("1995").availability(true).build());
         }
+
+        if (borrowingRepository.count() == 0) {
+            List<User> users = userRepository.findAll();
+            List<Book> books = bookRepository.findAll();
+
+            if (!users.isEmpty() && !books.isEmpty()) {
+
+                // 🟢 Normal borrowings
+                borrowingRepository.save(Borrowing.builder()
+                        .user(users.get(0))
+                        .book(markBookAsBorrowed(books.get(0)))
+                        .borrowDate(LocalDate.now().minusDays(7))
+                        .dueDate(LocalDate.now().plusDays(7))
+                        .returnDate(null)
+                        .build());
+
+                borrowingRepository.save(Borrowing.builder()
+                        .user(users.get(1))
+                        .book(markBookAsBorrowed(books.get(1)))
+                        .borrowDate(LocalDate.now().minusDays(10))
+                        .dueDate(LocalDate.now().minusDays(2))
+                        .returnDate(LocalDate.now().minusDays(1)) // late return
+                        .build());
+
+                borrowingRepository.save(Borrowing.builder()
+                        .user(users.get(2))
+                        .book(markBookAsBorrowed(books.get(2)))
+                        .borrowDate(LocalDate.now().minusDays(3))
+                        .dueDate(LocalDate.now().plusDays(4))
+                        .returnDate(null)
+                        .build());
+
+                // 🔴 Overdue - not returned yet
+                borrowingRepository.save(Borrowing.builder()
+                        .user(users.get(3))
+                        .book(markBookAsBorrowed(books.get(3)))
+                        .borrowDate(LocalDate.now().minusDays(20))
+                        .dueDate(LocalDate.now().minusDays(5))
+                        .returnDate(null)
+                        .build());
+
+                borrowingRepository.save(Borrowing.builder()
+                        .user(users.get(5))
+                        .book(markBookAsBorrowed(books.get(5)))
+                        .borrowDate(LocalDate.now().minusDays(30))
+                        .dueDate(LocalDate.now().minusDays(2))
+                        .returnDate(null)
+                        .build());
+
+                // 🔴 Overdue - returned late
+                borrowingRepository.save(Borrowing.builder()
+                        .user(users.get(4))
+                        .book(markBookAsBorrowed(books.get(4)))
+                        .borrowDate(LocalDate.now().minusDays(15))
+                        .dueDate(LocalDate.now().minusDays(7))
+                        .returnDate(LocalDate.now().minusDays(1))
+                        .build());
+            }
+        }
+    }
+    private Book markBookAsBorrowed(Book book) {
+        book.setAvailability(false);
+        return bookRepository.save(book);
     }
 }
