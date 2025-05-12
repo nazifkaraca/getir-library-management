@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 @Service
 public class AuditLogService {
 
+    // Logs an audit message including the user email, action performed, detail, and timestamp
     public void logAction(String userEmail, String action, String detail) {
         log.info("AUDIT | user={} | action={} | detail={} | at={}", userEmail, action, detail, LocalDateTime.now());
     }
 
+    // Retrieves the currently authenticated user's email from the security context
     public String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (authentication != null && authentication.isAuthenticated())

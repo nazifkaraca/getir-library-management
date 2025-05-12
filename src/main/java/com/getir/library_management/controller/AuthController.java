@@ -33,6 +33,4 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponseDto> login(@Valid @RequestBody AuthenticationRequestDto request) throws BadRequestException {
         return ResponseEntity.ok(authService.login(request));
     }
-
-
 }

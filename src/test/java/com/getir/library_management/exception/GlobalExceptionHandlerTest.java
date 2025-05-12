@@ -4,9 +4,7 @@ import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
 import com.getir.library_management.dto.Book.CreateBookRequestDto;
 import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.getir.library_management.exception.custom.BookAlreadyExistsException;
-import com.getir.library_management.exception.custom.EmailAlreadyExistsException;
-import com.getir.library_management.exception.custom.UserNotFoundException;
+import com.getir.library_management.exception.custom.*;
 import com.getir.library_management.service.impl.AuthServiceImpl;
 import com.getir.library_management.service.impl.BookServiceImpl;
 import com.getir.library_management.service.impl.UserServiceImpl;
@@ -24,7 +22,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -49,26 +46,26 @@ class GlobalExceptionHandlerTest {
     @WithMockUser
     @Test
     void shouldHandleBookNotFoundException() throws Exception {
-        when(bookService.getBookById(1L)).thenThrow(new com.getir.library_management.exception.custom.BookNotFoundException("Book not found"));
+        when(bookService.getBookById(1L)).thenThrow(new BookNotFoundException("Book not found"));
 
         mockMvc.perform(get("/api/book/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Book Not Found"))
-                .andExpect(jsonPath("$.message").value("Book not found"));
+                .andExpect(jsonPath("$.message").value(ErrorMessages.BOOK_NOT_FOUND));
     }
 
     @WithMockUser(username = "admin", roles = {"LIBRARIAN"})
     @Test
     void shouldHandleBookAlreadyExistsException() throws Exception {
         String validBookJson = """
-    {
-      "title": "Test Book",
-      "author": "Test Author",
-      "isbn": "1234567890",
-      "genre": "Test Genre",
-      "publicationDate": "2025-01-01"
-    }
-    """;
+        {
+          "title": "Test Book",
+          "author": "Test Author",
+          "isbn": "1234567890",
+          "genre": "Test Genre",
+          "publicationDate": "2025-01-01"
+        }
+        """;
 
         when(bookService.addBook(any(CreateBookRequestDto.class)))
                 .thenThrow(new BookAlreadyExistsException("Book exists"));
@@ -78,20 +75,19 @@ class GlobalExceptionHandlerTest {
                         .content(validBookJson))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Book Already Exists"))
-                .andExpect(jsonPath("$.message").value("Book exists"));
+                .andExpect(jsonPath("$.message").value(ErrorMessages.BOOK_EXISTS));
     }
-
 
     @WithMockUser(username = "admin", roles = {"LIBRARIAN"})
     @Test
     void shouldHandleEmailAlreadyExistsException() throws Exception {
         String validRegisterJson = """
-    {
-      "fullName": "Ali Simsek",
-      "email": "ali@example.com",
-      "password": "Abcd!1234"
-    }
-    """;
+        {
+          "fullName": "Ali Simsek",
+          "email": "ali@example.com",
+          "password": "Abcd!1234"
+        }
+        """;
 
         when(authService.register(any(RegisterRequestDto.class)))
                 .thenThrow(new EmailAlreadyExistsException("Email already exists"));
@@ -101,9 +97,9 @@ class GlobalExceptionHandlerTest {
                         .content(validRegisterJson))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Email Already Exists"))
-                .andExpect(jsonPath("$.message").value("Email already exists"));
-    }
+                .andExpect(jsonPath("$.message").value("Email already exists."));
 
+    }
 
     @WithMockUser(username = "admin", roles = {"LIBRARIAN"})
     @Test
@@ -114,19 +110,18 @@ class GlobalExceptionHandlerTest {
         mockMvc.perform(get("/api/user/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("User Not Found"))
-                .andExpect(jsonPath("$.message").value("User not found"));
+                .andExpect(jsonPath("$.message").value(ErrorMessages.USER_NOT_FOUND));
     }
-
 
     @WithMockUser
     @Test
     void shouldHandleBadCredentialsException() throws Exception {
         String validLogin = """
-    {
-      "email": "test@test.com",
-      "password": "wrongpassword"
-    }
-    """;
+        {
+          "email": "test@test.com",
+          "password": "wrongpassword"
+        }
+        """;
 
         when(authService.login(any(AuthenticationRequestDto.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
@@ -139,7 +134,6 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.message").value("Invalid email or password."));
     }
 
-
     @WithMockUser
     @Test
     void shouldHandleIllegalArgumentException() throws Exception {
@@ -147,7 +141,7 @@ class GlobalExceptionHandlerTest {
 
         mockMvc.perform(get("/api/book/-1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Invalid Sort Field"))
+                .andExpect(jsonPath("$.error").value("Invalid Argument"))
                 .andExpect(jsonPath("$.message").value("The sort field is invalid or does not exist in Book entity."));
     }
 

@@ -4,14 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getir.library_management.dto.Auth.AuthenticationRequestDto;
 import com.getir.library_management.dto.User.RegisterRequestDto;
 import com.getir.library_management.entity.Role;
+import com.getir.library_management.exception.ErrorMessages;
 import com.getir.library_management.logging.audit.AuditLogService;
+import com.getir.library_management.repository.BorrowingRepository;
 import com.getir.library_management.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,16 +33,20 @@ class AuthControllerIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private BorrowingRepository borrowingRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @MockBean
+    @Autowired
     private AuditLogService auditLogService;
 
     @BeforeEach
-    void setup() {
+    void cleanDatabase() {
+        borrowingRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -60,8 +65,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
-    void shouldFailRegisteringWithDuplicateEmail() throws Exception {
-        // Same email already exists
+    void shouldReturnConflictWhenEmailAlreadyExists() throws Exception {
         userRepository.save(com.getir.library_management.entity.User.builder()
                 .fullName("Existing")
                 .email("duplicate@getir.com")
@@ -78,12 +82,13 @@ class AuthControllerIntegrationTest {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error").value("Email Already Exists"))
+                .andExpect(jsonPath("$.message").value("Email already exists."));
     }
 
     @Test
     void shouldLoginSuccessfully() throws Exception {
-        // Register user
         userRepository.save(com.getir.library_management.entity.User.builder()
                 .fullName("Login User")
                 .email("login@getir.com")
@@ -103,7 +108,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
-    void shouldFailLoginWithInvalidCredentials() throws Exception {
+    void shouldReturnUnauthorizedForInvalidLogin() throws Exception {
         AuthenticationRequestDto request = new AuthenticationRequestDto();
         request.setEmail("wrong@getir.com");
         request.setPassword("wrong");
@@ -112,6 +117,7 @@ class AuthControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("User Not Found"))
                 .andExpect(jsonPath("$.message").value("The specified user could not be located. Please ensure the user ID or email is correct."));
     }
 }

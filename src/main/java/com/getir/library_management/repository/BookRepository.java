@@ -12,10 +12,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long>  {
+    // Find book by isbn
     Optional<Book> findByIsbn(String isbn);
-
+    // Check by isbn
     boolean existsByIsbn(@NotBlank(message = "ISBN is required.") String isbn);
-
+    // Custom search query for book
     @Query("""
     SELECT b FROM Book b
     WHERE (:title IS NULL OR LOWER(b.title) LIKE CONCAT('%', LOWER(CAST(:title AS string)), '%'))

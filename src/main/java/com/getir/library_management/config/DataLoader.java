@@ -18,55 +18,56 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Profile("!prod") // Do not run in production
+@Profile({"!prod", "!test"})
 public class DataLoader implements CommandLineRunner {
+
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    private final PasswordEncoder passwordEncoder;
     private final BorrowingRepository borrowingRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
-
         if (userRepository.count() == 0) {
-            // Add sample users
-            // Librarian
-            userRepository.save(User.builder().fullName("Libby Librarian").email("librarian@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_LIBRARIAN).build());
-
-            // Users
-            userRepository.save(User.builder().fullName("John Reader").email("john@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("Alice Smith").email("alice@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("Bob Johnson").email("bob@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("Carol White").email("carol@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("David Brown").email("david@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("Eve Green").email("eve@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("Frank Gray").email("frank@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
-            userRepository.save(User.builder().fullName("Grace Black").email("grace@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build());
+            List<User> users = List.of(
+                    User.builder().fullName("Libby Librarian").email("librarian@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_LIBRARIAN).build(),
+                    User.builder().fullName("John Reader").email("john@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("Alice Smith").email("alice@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("Bob Johnson").email("bob@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("Carol White").email("carol@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("David Brown").email("david@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("Eve Green").email("eve@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("Frank Gray").email("frank@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build(),
+                    User.builder().fullName("Grace Black").email("grace@getir.com").password(passwordEncoder.encode("1234")).role(Role.ROLE_USER).build()
+            );
+            userRepository.saveAll(users);
         }
 
         if (bookRepository.count() == 0) {
-            // Add sample books
-            bookRepository.save(Book.builder().title("Clean Code").author("Robert C. Martin").isbn("9780132350884").genre("Programming").publicationDate("2008").availability(true).build());
-            bookRepository.save(Book.builder().title("Effective Java").author("Joshua Bloch").isbn("9780134685991").genre("Programming").publicationDate("2018").availability(true).build());
-            bookRepository.save(Book.builder().title("The Pragmatic Programmer").author("Andy Hunt").isbn("9780201616224").genre("Programming").publicationDate("1999").availability(true).build());
-            bookRepository.save(Book.builder().title("Design Patterns").author("Erich Gamma").isbn("9780201633610").genre("Software Engineering").publicationDate("1994").availability(true).build());
-            bookRepository.save(Book.builder().title("Refactoring").author("Martin Fowler").isbn("9780201485677").genre("Programming").publicationDate("1999").availability(true).build());
-            bookRepository.save(Book.builder().title("Head First Design Patterns").author("Eric Freeman").isbn("9780596007126").genre("Programming").publicationDate("2004").availability(true).build());
-            bookRepository.save(Book.builder().title("Domain-Driven Design").author("Eric Evans").isbn("9780321125217").genre("Software Architecture").publicationDate("2003").availability(true).build());
-            bookRepository.save(Book.builder().title("Java Concurrency in Practice").author("Brian Goetz").isbn("9780321349606").genre("Programming").publicationDate("2006").availability(true).build());
-            bookRepository.save(Book.builder().title("Spring in Action").author("Craig Walls").isbn("9781617294945").genre("Java").publicationDate("2018").availability(true).build());
-            bookRepository.save(Book.builder().title("You Don't Know JS").author("Kyle Simpson").isbn("9781491904244").genre("JavaScript").publicationDate("2015").availability(true).build());
-            bookRepository.save(Book.builder().title("Cracking the Coding Interview").author("Gayle Laakmann McDowell").isbn("9780984782857").genre("Interview Prep").publicationDate("2015").availability(true).build());
-            bookRepository.save(Book.builder().title("Introduction to Algorithms").author("Thomas H. Cormen").isbn("9780262033848").genre("Algorithms").publicationDate("2009").availability(true).build());
-            bookRepository.save(Book.builder().title("The Clean Coder").author("Robert C. Martin").isbn("9780137081073").genre("Software Craftsmanship").publicationDate("2011").availability(true).build());
-            bookRepository.save(Book.builder().title("Structure and Interpretation of Computer Programs").author("Harold Abelson").isbn("9780262510875").genre("Computer Science").publicationDate("1996").availability(true).build());
-            bookRepository.save(Book.builder().title("Code Complete").author("Steve McConnell").isbn("9780735619678").genre("Programming").publicationDate("2004").availability(true).build());
-            bookRepository.save(Book.builder().title("The Art of Computer Programming").author("Donald E. Knuth").isbn("9780201896831").genre("Algorithms").publicationDate("1997").availability(true).build());
-            bookRepository.save(Book.builder().title("Algorithms").author("Robert Sedgewick").isbn("9780321573513").genre("Computer Science").publicationDate("2011").availability(true).build());
-            bookRepository.save(Book.builder().title("Python Crash Course").author("Eric Matthes").isbn("9781593279288").genre("Python").publicationDate("2019").availability(true).build());
-            bookRepository.save(Book.builder().title("Deep Learning").author("Ian Goodfellow").isbn("9780262035613").genre("AI").publicationDate("2016").availability(true).build());
-            bookRepository.save(Book.builder().title("Artificial Intelligence: A Modern Approach").author("Stuart Russell").isbn("9780136042594").genre("AI").publicationDate("2010").availability(true).build());
-            bookRepository.save(Book.builder().title("The Mythical Man-Month").author("Frederick P. Brooks Jr.").isbn("9780201835953").genre("Software Project Management").publicationDate("1995").availability(true).build());
+            List<Book> books = List.of(
+                    newBook("Clean Code", "Robert C. Martin", "9780132350884", "Programming", "2008"),
+                    newBook("Effective Java", "Joshua Bloch", "9780134685991", "Programming", "2018"),
+                    newBook("The Pragmatic Programmer", "Andy Hunt", "9780201616224", "Programming", "1999"),
+                    newBook("Design Patterns", "Erich Gamma", "9780201633610", "Software Engineering", "1994"),
+                    newBook("Refactoring", "Martin Fowler", "9780201485677", "Programming", "1999"),
+                    newBook("Head First Design Patterns", "Eric Freeman", "9780596007126", "Programming", "2004"),
+                    newBook("Domain-Driven Design", "Eric Evans", "9780321125217", "Software Architecture", "2003"),
+                    newBook("Java Concurrency in Practice", "Brian Goetz", "9780321349606", "Programming", "2006"),
+                    newBook("Spring in Action", "Craig Walls", "9781617294945", "Java", "2018"),
+                    newBook("You Don't Know JS", "Kyle Simpson", "9781491904244", "JavaScript", "2015"),
+                    newBook("Cracking the Coding Interview", "Gayle McDowell", "9780984782857", "Interview Prep", "2015"),
+                    newBook("Introduction to Algorithms", "Thomas H. Cormen", "9780262033848", "Algorithms", "2009"),
+                    newBook("The Clean Coder", "Robert C. Martin", "9780137081073", "Craftsmanship", "2011"),
+                    newBook("SICP", "Harold Abelson", "9780262510875", "Computer Science", "1996"),
+                    newBook("Code Complete", "Steve McConnell", "9780735619678", "Programming", "2004"),
+                    newBook("TAOCP", "Donald Knuth", "9780201896831", "Algorithms", "1997"),
+                    newBook("Algorithms", "Robert Sedgewick", "9780321573513", "Computer Science", "2011"),
+                    newBook("Python Crash Course", "Eric Matthes", "9781593279288", "Python", "2019"),
+                    newBook("Deep Learning", "Ian Goodfellow", "9780262035613", "AI", "2016"),
+                    newBook("AI: A Modern Approach", "Stuart Russell", "9780136042594", "AI", "2010"),
+                    newBook("The Mythical Man-Month", "Fred Brooks", "9780201835953", "Project Management", "1995")
+            );
+            bookRepository.saveAll(books);
         }
 
         if (borrowingRepository.count() == 0) {
@@ -74,62 +75,38 @@ public class DataLoader implements CommandLineRunner {
             List<Book> books = bookRepository.findAll();
 
             if (!users.isEmpty() && !books.isEmpty()) {
+                List<Borrowing> borrowings = List.of(
+                        // 🟢 On-time borrowings
+                        newBorrow(users.get(0), books.get(0), 7, -7, null),
+                        newBorrow(users.get(1), books.get(1), 10, -2, LocalDate.now().minusDays(1)),
+                        newBorrow(users.get(2), books.get(2), 2, -3, LocalDate.now().plusDays(4)),
 
-                // 🟢 Normal borrowings
-                borrowingRepository.save(Borrowing.builder()
-                        .user(users.get(0))
-                        .book(markBookAsBorrowed(books.get(0)))
-                        .borrowDate(LocalDate.now().minusDays(7))
-                        .dueDate(LocalDate.now().plusDays(7))
-                        .returnDate(null)
-                        .build());
+                        // 🔴 Overdue not returned
+                        newBorrow(users.get(3), books.get(3), 20, 5, null),
+                        newBorrow(users.get(5), books.get(5), 30, 2, null),
 
-                borrowingRepository.save(Borrowing.builder()
-                        .user(users.get(1))
-                        .book(markBookAsBorrowed(books.get(1)))
-                        .borrowDate(LocalDate.now().minusDays(10))
-                        .dueDate(LocalDate.now().minusDays(2))
-                        .returnDate(LocalDate.now().minusDays(1)) // late return
-                        .build());
-
-                borrowingRepository.save(Borrowing.builder()
-                        .user(users.get(2))
-                        .book(markBookAsBorrowed(books.get(2)))
-                        .borrowDate(LocalDate.now().minusDays(3))
-                        .dueDate(LocalDate.now().plusDays(4))
-                        .returnDate(null)
-                        .build());
-
-                // 🔴 Overdue - not returned yet
-                borrowingRepository.save(Borrowing.builder()
-                        .user(users.get(3))
-                        .book(markBookAsBorrowed(books.get(3)))
-                        .borrowDate(LocalDate.now().minusDays(20))
-                        .dueDate(LocalDate.now().minusDays(5))
-                        .returnDate(null)
-                        .build());
-
-                borrowingRepository.save(Borrowing.builder()
-                        .user(users.get(5))
-                        .book(markBookAsBorrowed(books.get(5)))
-                        .borrowDate(LocalDate.now().minusDays(30))
-                        .dueDate(LocalDate.now().minusDays(2))
-                        .returnDate(null)
-                        .build());
-
-                // 🔴 Overdue - returned late
-                borrowingRepository.save(Borrowing.builder()
-                        .user(users.get(4))
-                        .book(markBookAsBorrowed(books.get(4)))
-                        .borrowDate(LocalDate.now().minusDays(15))
-                        .dueDate(LocalDate.now().minusDays(7))
-                        .returnDate(LocalDate.now().minusDays(1))
-                        .build());
+                        // 🔴 Overdue returned late
+                        newBorrow(users.get(4), books.get(4), 15, 7, LocalDate.now().minusDays(1))
+                );
+                borrowingRepository.saveAll(borrowings);
             }
         }
     }
-    private Book markBookAsBorrowed(Book book) {
+
+    private Book newBook(String title, String author, String isbn, String genre, String year) {
+        return Book.builder().title(title).author(author).isbn(isbn).genre(genre).publicationDate(year).availability(true).build();
+    }
+
+    private Borrowing newBorrow(User user, Book book, int borrowAgo, int dueAgo, LocalDate returnDate) {
         book.setAvailability(false);
-        return bookRepository.save(book);
+        bookRepository.save(book);
+
+        return Borrowing.builder()
+                .user(user)
+                .book(book)
+                .borrowDate(LocalDate.now().minusDays(borrowAgo))
+                .dueDate(LocalDate.now().minusDays(dueAgo))
+                .returnDate(returnDate)
+                .build();
     }
 }

@@ -16,17 +16,21 @@ import java.util.Map;
 @Service
 public class JwtService {
 
+    // JWT secret key loaded from application properties
     @Value("${jwt.secret}")
     private String secret;
 
+    // Secret key used to sign the JWT
     private Key key;
 
+    // Initializes the signing key after the bean is constructed
     @PostConstruct
     public void init() {
         byte[] keyBytes = Base64.getDecoder().decode(secret);
         this.key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
+    // Generates a JWT token with custom claims for the given user
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
@@ -42,6 +46,7 @@ public class JwtService {
                 .compact();
     }
 
+    // Extracts the username (subject) from a given JWT token
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

@@ -28,68 +28,82 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
+    // Dependencies required for book operations
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
     private final AuditLogService auditLogService;
     private final CurrentUserService currentUserService;
 
+    // Adds a new book to the system and evicts cache entries
     @CacheEvict(value = "bookSearchCache", allEntries = true) // Clear redis cache when a new book added
     @Override
     public BookResponseDto addBook(CreateBookRequestDto request) throws BookAlreadyExistsException {
-        // Check if book exists
+        // Check if book already exists by ISBN
         if (bookRepository.existsByIsbn(request.getIsbn())) {
             throw new BookAlreadyExistsException(ErrorMessages.BOOK_EXISTS);
         }
-        // Map requested book to be created with Book entity
+
+        // Map request DTO to Book entity
         Book book = modelMapper.map(request, Book.class);
-        // Save book
+
+        // Save the new book to the database
         Book savedBook = bookRepository.save(book);
-        // Logging
+
+        // Log the book addition action
         auditLogService.logAction(
                 currentUserService.getEmail(),
                 "ADD_BOOK",
                 "Added book: " + savedBook.getTitle()
         );
-        // Return mapped book response
+
+        // Map the saved book to a response DTO and return
         return modelMapper.map(savedBook, BookResponseDto.class);
     }
 
+    // Updates an existing book's details
     @Override
     public BookResponseDto updateBook(Long id, UpdateBookRequestDto request) {
+        // Retrieve the book or throw an exception if not found
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
 
-        // Check before setting ISBN
+        // Check for duplicate ISBN if it’s being changed
         if (bookRepository.existsByIsbn(request.getIsbn()) && !book.getIsbn().equals(request.getIsbn())) {
             throw new BookAlreadyExistsException(ErrorMessages.BOOK_EXISTS);
         }
 
-        // Set after validation
+        // Update book fields
         book.setAuthor(request.getAuthor());
         book.setIsbn(request.getIsbn());
         book.setGenre(request.getGenre());
         book.setTitle(request.getTitle());
         book.setPublicationDate(request.getPublicationDate());
-        // Save updated book to database
+
+        // Save updated book
         Book updatedBook = bookRepository.save(book);
-        // Logging
+
+        // Log the update action
         auditLogService.logAction(
                 currentUserService.getEmail(),
                 "UPDATE_BOOK",
                 "Updated book ID: " + id
         );
+
+        // Return updated book response
         return modelMapper.map(updatedBook, BookResponseDto.class);
     }
 
+    // Deletes a book by ID
     @Override
     public void deleteBook(Long id) {
-        // Find book by id
+        // Retrieve the book or throw an exception if not found
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
 
-        // Delete book
+        // Delete the book from the database
         bookRepository.delete(book);
-        // Logging
+
+        // Log the deletion
         auditLogService.logAction(
                 currentUserService.getEmail(),
                 "DELETE_BOOK",
@@ -97,15 +111,18 @@ public class BookServiceImpl implements BookService {
         );
     }
 
+    // Retrieves a book by its ID
     @Override
     public BookResponseDto getBookById(Long id) {
-        // Find book by id
+        // Retrieve the book or throw an exception if not found
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(ErrorMessages.BOOK_NOT_FOUND));
-        // Return book by mapping
+
+        // Map and return the book response DTO
         return modelMapper.map(book, BookResponseDto.class);
     }
 
+    // Searches for books using optional filters and caches the result
     @Cacheable(value = "bookSearchCache", key = "#title + '_' + #author + '_' + #isbn + '_' + #genre + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
     @Override
     public Page<BookResponseDto> searchBooks(String title, String author, String isbn, String genre, Pageable pageable) {
@@ -113,7 +130,7 @@ public class BookServiceImpl implements BookService {
                 .map(book -> modelMapper.map(book, BookResponseDto.class));
     }
 
-    // Get all books without filter
+    // Retrieves all books without any filtering
     @Override
     public List<BookResponseDto> getAllBooks() {
         return bookRepository.findAll()
@@ -121,5 +138,4 @@ public class BookServiceImpl implements BookService {
                 .map(book -> modelMapper.map(book, BookResponseDto.class))
                 .toList();
     }
-
 }

@@ -17,11 +17,15 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+
+    // Handles access denied exceptions for authenticated users lacking required permissions
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        // Log a warning with the request path and the exception message
         log.warn("ACCESS DENIED | Path: {} | Message: {}", request.getRequestURI(), accessDeniedException.getMessage());
 
+        // Build a custom error response object with relevant details
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
@@ -29,8 +33,10 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                 .message("You are authenticated but not authorized to access this resource.")
                 .build();
 
+        // Set response content type and status, then write the error as JSON to the response
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }
 }
+
