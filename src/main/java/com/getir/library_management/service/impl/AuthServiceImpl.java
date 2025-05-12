@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 
     // Login
     @Override
-    public AuthenticationResponseDto login(AuthenticationRequestDto request) {
+    public AuthenticationResponseDto login(AuthenticationRequestDto request)  {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     auditLogService.logAction("anonymous", "LOGIN_FAILED", "Email not found: " + request.getEmail());

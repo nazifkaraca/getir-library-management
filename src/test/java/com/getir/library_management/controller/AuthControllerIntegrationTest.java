@@ -112,6 +112,6 @@ class AuthControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("User not found."));
+                .andExpect(jsonPath("$.message").value("The specified user could not be located. Please ensure the user ID or email is correct."));
     }
 }

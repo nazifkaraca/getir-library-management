@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth") // JWT required for all endpoints
-@PreAuthorize("hasRole('LIBRARIAN')")
+@PreAuthorize("hasRole('LIBRARIAN')") // Only Librarian endpoint
 public class UserController {
 
     private final UserService userService;

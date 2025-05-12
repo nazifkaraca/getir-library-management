@@ -159,8 +159,10 @@ public class BorrowingServiceImpl implements BorrowingService {
     public List<BorrowResponseDto> getOverdueBooks() {
         LocalDate today = LocalDate.now();
 
-        return borrowingRepository.findAll().stream()
-                .filter(b -> b.getReturnDate() == null && b.getDueDate().isBefore(today))
+        List<Borrowing> overdueBorrowings = borrowingRepository
+                .findByReturnDateIsNullAndDueDateBefore(today);
+
+        return overdueBorrowings.stream()
                 .map(b -> BorrowResponseDto.builder()
                         .id(b.getId())
                         .userFullName(b.getUser().getFullName())
@@ -168,7 +170,7 @@ public class BorrowingServiceImpl implements BorrowingService {
                         .borrowDate(b.getBorrowDate())
                         .dueDate(b.getDueDate())
                         .returnDate(null)
-                        .build()
-                ).toList();
+                        .build())
+                .toList();
     }
 }

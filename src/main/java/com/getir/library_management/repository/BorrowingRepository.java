@@ -3,6 +3,7 @@ package com.getir.library_management.repository;
 import com.getir.library_management.entity.Borrowing;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
@@ -14,4 +15,6 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
 
     // Find active borrowing (not yet returned)
     Borrowing findByBookIdAndReturnDateIsNull(Long bookId);
+
+    List<Borrowing> findByReturnDateIsNullAndDueDateBefore(LocalDate date);
 }

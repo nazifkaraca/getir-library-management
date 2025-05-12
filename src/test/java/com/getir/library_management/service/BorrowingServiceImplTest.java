@@ -164,9 +164,16 @@ class BorrowingServiceImplTest {
     void getOverdueBooks_ShouldReturnList() {
         User user = User.builder().fullName("Ali").build();
         Book book = Book.builder().title("Kitap").build();
-        Borrowing overdue = Borrowing.builder().id(1L).user(user).book(book).borrowDate(LocalDate.now().minusDays(10)).dueDate(LocalDate.now().minusDays(3)).build();
+        Borrowing overdue = Borrowing.builder()
+                .id(1L)
+                .user(user)
+                .book(book)
+                .borrowDate(LocalDate.now().minusDays(10))
+                .dueDate(LocalDate.now().minusDays(1))
+                .build();
 
-        when(borrowingRepository.findAll()).thenReturn(List.of(overdue));
+        when(borrowingRepository.findByReturnDateIsNullAndDueDateBefore(any()))
+                .thenReturn(List.of(overdue));
 
         List<BorrowResponseDto> result = borrowingService.getOverdueBooks();
 

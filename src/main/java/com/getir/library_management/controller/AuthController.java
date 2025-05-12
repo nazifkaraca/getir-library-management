@@ -8,6 +8,7 @@ import com.getir.library_management.service.impl.AuthServiceImpl;
 import com.getir.library_management.service.interfaces.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class AuthController {
     // Login endpoint - public
     // POST http://localhost:8070/api/auth/login
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDto> login(@Valid @RequestBody AuthenticationRequestDto request) {
+    public ResponseEntity<AuthenticationResponseDto> login(@Valid @RequestBody AuthenticationRequestDto request) throws BadRequestException {
         return ResponseEntity.ok(authService.login(request));
     }
 

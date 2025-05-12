@@ -141,7 +141,7 @@ class BookControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Book already exists."));
+                .andExpect(jsonPath("$.message").value("A book with the same ISBN already exists in the library. Duplicate entries are not allowed."));
     }
 
     @Test
@@ -208,7 +208,7 @@ class BookControllerIntegrationTest {
         mockMvc.perform(delete("/api/book/{id}", 9999L)
                         .header("Authorization", token))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Book not found."));
+                .andExpect(jsonPath("$.message").value("The requested book could not be found in the system. Please check the book ID or try a different search term."));
     }
 
     @Test
