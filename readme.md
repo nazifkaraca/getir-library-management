@@ -131,7 +131,7 @@ A complete Postman Collection is included to test all features:
 
 ## 🗃️ Database Schema (ERD)
 
-
+![Entity Relationship Diagram](https://github.com/user-attachments/assets/55a993a1-ce77-4d19-8ecc-1aedab0a03c1)
 
 ---
 
