@@ -50,13 +50,25 @@ This project is built with **Spring Boot 3** and **Java 21**, leveraging modern 
 
 ---
 
-## Before Running
+## 🛑 Before Starting
 
 Run this command to build .jar file:
 ```bash
 mvn clean package -DskipTests 
 ```
 
+---
+
+## 📦 Docker Setup
+
+```bash
+# Build the app and run with Docker Compose
+docker-compose up --build
+````
+
+> Make sure Docker and Docker Compose are installed on your system.
+
+---
 
 ## 🧪 Testing Strategy
 
@@ -80,17 +92,6 @@ Run all tests:
 
 ---
 
-## 📦 Docker Setup
-
-```bash
-# Build the app and run with Docker Compose
-docker-compose up --build
-````
-
-> Make sure Docker and Docker Compose are installed on your system.
-
----
-
 ## 📡 API Documentation
 
 Swagger UI is available at:
@@ -100,6 +101,21 @@ http://localhost:8070/swagger-ui/index.html
 ```
 
 You can explore and test all endpoints interactively.
+
+---
+
+## 📬 Postman Collection
+
+A complete Postman Collection is included to test all features: 
+
+<h3><a href="https://drive.google.com/file/d/1gNRI74HgJyitG-U4HrAX7dV8cqekXi7D/view?usp=sharing">Download Postman Collection as JSON</a></h3>
+
+<h3><a href="https://postman.co/workspace/Personal-Workspace~df22195b-a6bf-4bb0-8f17-2502150396c2/collection/35081217-2e7edf5a-ccfd-4666-8b56-a3d826bb14bd?action=share&creator=35081217&active-environment=35081217-fc0abc9e-3263-4c57-9621-4ff61e38a93e">Ask Permission for Postman Collection</a></h3>
+
+
+* Grouped by: Auth, User, Book, Borrowing
+* Includes example requests and responses
+* Ready-to-use JWT tokens for testing protected routes
 
 ---
 
@@ -116,25 +132,6 @@ src/
 ├── exception/           # Global error handling
 └── test/                # Unit & integration tests
 ```
-
----
-
-## 📑 API Documentation
-
-The Swagger UI provides interactive API documentation:
-```
-http://localhost:8080/swagger-ui/index.html
-````
-
----
-
-## 📬 Postman Collection
-
-A complete Postman Collection is included to test all features: <h3><a href="https://postman.co/workspace/Personal-Workspace~df22195b-a6bf-4bb0-8f17-2502150396c2/collection/35081217-2e7edf5a-ccfd-4666-8b56-a3d826bb14bd?action=share&creator=35081217&active-environment=35081217-fc0abc9e-3263-4c57-9621-4ff61e38a93e">Go Testing</a></h3>
-
-* Grouped by: Auth, User, Book, Borrowing
-* Includes example requests and responses
-* Ready-to-use JWT tokens for testing protected routes
 
 ---
 
