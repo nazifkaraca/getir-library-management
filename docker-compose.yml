@@ -32,13 +32,14 @@ services:
     ports:
       - "8070:8070"
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/library_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 1234
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      JWT_SECRET: a2V5LWZvci1naXRodWItaXNzdWUtZGVtbzEyMzQ1Njc4OQ==
+      JWT_SECRET_ENV: a2V5LWZvci1naXRodWItaXNzdWUtZGVtbzEyMzQ1Njc4OQ==
     networks:
       - app-network
 
