@@ -36,7 +36,7 @@ This project is built with **Spring Boot 3** and **Java 21**, leveraging modern 
 
 | Layer              | Technology                       |
 |-------------------|-----------------------------------|
-| Language           | Java 21                          |
+| Language           | Java 21 (Amazon Corretto 21.0.7)                         |
 | Framework          | Spring Boot 3                    |
 | Persistence        | Spring Data JPA + Hibernate      |
 | Security           | Spring Security + JWT            |
@@ -50,6 +50,14 @@ This project is built with **Spring Boot 3** and **Java 21**, leveraging modern 
 
 ---
 
+## Before Running
+
+Run this command to build .jar file:
+```bash
+mvn clean package -DskipTests 
+```
+
+
 ## 🧪 Testing Strategy
 
 - ✔️ **Unit Tests** for services and utility layers
@@ -59,7 +67,8 @@ This project is built with **Spring Boot 3** and **Java 21**, leveraging modern 
 
 Run all tests:
 ```bash
-  mvn test
+  mvn test # or
+  mvn clean verify
 ```
 ---
 
